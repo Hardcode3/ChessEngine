@@ -33,3 +33,6 @@ build/*
 *.exe
 *.out
 *.app
+
+# Temporary files
+.DS_Store
