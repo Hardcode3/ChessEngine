@@ -7,7 +7,7 @@ project(
     DESCRIPTION "Basic C++ chess engine project."
     HOMEPAGE_URL "https://github.com/Hardcode3/CppChessEngine"
 )
-configure_file(${PROJECT_SOURCE_DIR}/cmake/ChessEnging.h.in ${PROJECT_BINARY_DIR}/ChessEnging.h)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/ChessEngine.h.in ${PROJECT_BINARY_DIR}/ChessEngine.h)
 
 add_definitions(-DCHESS_ENGINE_VERSION=${CMAKE_PROJECT_VERSION})
 add_definitions(-DCHESS_ENGINE_VERSION_MAJOR=${CMAKE_PROJECT_VERSION_MAJOR})
