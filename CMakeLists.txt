@@ -25,6 +25,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(COMPILE_EXEC "Copile executable targets or discard them" ON)
 set(COMPILE_TESTS "Compile tests or discard them" ON)
 
+include(cmake/clang_format.cmake)
+
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
