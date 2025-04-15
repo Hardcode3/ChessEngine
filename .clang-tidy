@@ -1,6 +1,7 @@
 Checks: >
   clang-analyzer-*,
   modernize-*,
+  -modernize-use-trailing-return-type,
   performance-*,
   readability-*
 WarningsAsErrors: '*'
