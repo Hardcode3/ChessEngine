@@ -1,4 +1,4 @@
-#include <fen.hpp>
+#include <chess_engine/fen.hpp>
 #include <fmt/core.h>
 
 int main() {
