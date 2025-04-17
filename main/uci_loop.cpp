@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
 using std::cin;
@@ -25,7 +25,7 @@ vector<string> split(const string &s) {
 }
 
 // Main UCI loop
-void uci_loop(istream& input = cin, ostream& output = cout) {
+void uci_loop(istream &input = cin, ostream &output = cout) {
   string line;
   vector<string> tokens;
 
