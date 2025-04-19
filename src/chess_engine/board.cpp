@@ -433,12 +433,11 @@ void Board::generate_bishop_moves(std::vector<Move> &moves,
         moves.emplace_back(square, target_square, Piece::BISHOP);
         break;
       }
-      // If the square has our own piece, stop
+      // Own piece encountered, stop the search in this direction
       else {
         break;
       }
 
-      // Move to the next square in this direction
       new_rank += dir[0];
       new_file += dir[1];
     }
@@ -446,7 +445,34 @@ void Board::generate_bishop_moves(std::vector<Move> &moves,
 }
 
 void Board::generate_rook_moves(std::vector<Move> &moves, Square square) const {
-  // TODO: Implement
+
+  const int directions[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+  const Color rook_color = this->get_color(square);
+
+  for (const auto &dir : directions) {
+    Square new_square(square.rank + dir[0], square.file + dir[1]);
+
+    while (new_square.is_valid()) {
+      const Piece target_piece = this->get_piece(new_square);
+
+      // No enemy piece encountered, add the move
+      if (target_piece == Piece::EMPTY) {
+        moves.emplace_back(square, new_square, Piece::ROOK);
+      }
+      // Enemy piece encountered, add the capture move
+      else if (this->get_color(new_square) != rook_color) {
+        moves.emplace_back(square, new_square, Piece::ROOK, target_piece);
+      }
+      // Own piece encountered, stop the search in this direction
+      else {
+        break;
+      }
+
+      new_square.rank += dir[0];
+      new_square.file += dir[0];
+    }
+  }
 }
 
 void Board::generate_queen_moves(std::vector<Move> &moves,
