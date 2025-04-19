@@ -53,6 +53,9 @@ private:
   is_move_legal ( const Move &move ) const;
 
 public:
+  // Standard starting position in FEN notation
+  static constexpr const char *STANDARD_STARTING_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
   Board ();
 
   void
@@ -98,8 +101,8 @@ public:
   bool
   is_square_safe ( Square square, Color color ) const;
 
-private:
-  // ... existing code ...
+  Square
+  get_king_square ( Color color ) const;
 };
 
 } // namespace chess

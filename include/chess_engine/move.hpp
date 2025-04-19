@@ -23,21 +23,30 @@ struct Move
   Square castling_rook_from;
   Square castling_rook_to;
 
+  // State before the move
+  bool   white_castle_kingside;
+  bool   white_castle_queenside;
+  bool   black_castle_kingside;
+  bool   black_castle_queenside;
+  Square previous_en_passant;
+  int    previous_halfmove_clock;
+
   Move ( Square f, Square t, Piece p )
       : from ( f ), to ( t ), piece ( p ), captured ( Piece::EMPTY ), is_promotion ( false ),
-        promotion_piece ( Piece::EMPTY ), is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 )
+        promotion_piece ( Piece::EMPTY ), is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ),
+        previous_en_passant ( 0, 0 )
   {
   }
 
   Move ( Square f, Square t, Piece p, Piece c )
       : from ( f ), to ( t ), piece ( p ), captured ( c ), is_promotion ( false ), promotion_piece ( Piece::EMPTY ),
-        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 )
+        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ), previous_en_passant ( 0, 0 )
   {
   }
 
   Move ( Square f, Square t, Piece p, Piece c, bool prom, Piece prom_piece )
       : from ( f ), to ( t ), piece ( p ), captured ( c ), is_promotion ( prom ), promotion_piece ( prom_piece ),
-        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 )
+        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ), previous_en_passant ( 0, 0 )
   {
   }
 

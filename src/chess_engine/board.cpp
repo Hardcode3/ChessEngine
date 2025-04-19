@@ -174,9 +174,6 @@ Board::generate_legal_moves () const
   }
 
   // Filter out illegal moves
-  // Use remove_if to reorder the vector so that all elements that should be
-  // removed are moved to the end. Then, erase the elements at the end of the
-  // vector from the new iterator til the end of the vector.
   moves.erase ( std::remove_if ( moves.begin (),
                                  moves.end (),
                                  [this] ( const Move &move ) { return !this->is_move_legal ( move ); } ),
@@ -188,6 +185,14 @@ Board::generate_legal_moves () const
 void
 Board::make_move ( Move &move )
 {
+  // Store state before the move
+  move.white_castle_kingside   = white_castle_kingside;
+  move.white_castle_queenside  = white_castle_queenside;
+  move.black_castle_kingside   = black_castle_kingside;
+  move.black_castle_queenside  = black_castle_queenside;
+  move.previous_en_passant     = en_passant_square;
+  move.previous_halfmove_clock = halfmove_clock;
+
   // Store captured piece and move the piece
   move.captured                                = this->get_piece ( move.to );
   this->pieces[move.to.rank][move.to.file]     = move.piece;
@@ -389,9 +394,79 @@ Board::move_to_uci ( const Move &move ) const
 bool
 Board::is_game_over () const
 {
-  // Check for checkmate or stalemate
-  std::vector<Move> moves = this->generate_legal_moves ();
-  return moves.empty ();
+  // Check if there are any legal moves
+  std::vector<Move> legal_moves = generate_legal_moves ();
+  if ( !legal_moves.empty () )
+  {
+    return false;
+  }
+
+  // If no legal moves, check if it's checkmate or stalemate
+  Color  current_color = side_to_move;
+  Square king_square   = get_king_square ( current_color );
+  if ( !is_square_safe ( king_square, current_color ) )
+  {
+    return true; // Checkmate
+  }
+
+  // Check for insufficient material
+  bool has_pawns   = false;
+  bool has_knights = false;
+  bool has_bishops = false;
+  bool has_rooks   = false;
+  bool has_queens  = false;
+
+  for ( int rank = 0; rank < 8; ++rank )
+  {
+    for ( int file = 0; file < 8; ++file )
+    {
+      Square square ( file, rank );
+      Piece  piece = get_piece ( square );
+      if ( piece != Piece::EMPTY && piece != Piece::KING )
+      {
+        switch ( piece )
+        {
+        case Piece::PAWN:
+          has_pawns = true;
+          break;
+        case Piece::KNIGHT:
+          has_knights = true;
+          break;
+        case Piece::BISHOP:
+          has_bishops = true;
+          break;
+        case Piece::ROOK:
+          has_rooks = true;
+          break;
+        case Piece::QUEEN:
+          has_queens = true;
+          break;
+        default:
+          break;
+        }
+      }
+    }
+  }
+
+  // If there are any pawns, rooks, or queens, the game is not drawn by insufficient material
+  if ( has_pawns || has_rooks || has_queens )
+  {
+    return true; // Stalemate
+  }
+
+  // If there are only kings, it's a draw
+  if ( !has_knights && !has_bishops )
+  {
+    return true;
+  }
+
+  // If there is only one minor piece (knight or bishop), it's a draw
+  if ( ( has_knights && !has_bishops ) || ( !has_knights && has_bishops ) )
+  {
+    return true;
+  }
+
+  return true; // Stalemate
 }
 
 // 1. Pawn can move forward one square
@@ -736,7 +811,273 @@ bool
 Board::is_square_safe ( Square square, Color color ) const
 {
   // Check for pawn attacks
-  const int pawn_direction     = ( color == Color::WHITE ) ? 1 : -1;
+  int pawn_dir  = ( color == Color::WHITE ) ? 1 : -1;
+  int pawn_rank = square.rank + pawn_dir;
+  if ( pawn_rank >= 0 && pawn_rank < 8 )
+  {
+    // Check left diagonal
+    int left_file = square.file - 1;
+    if ( left_file >= 0 )
+    {
+      Square left_diag ( left_file, pawn_rank );
+      if ( get_piece ( left_diag ) == Piece::PAWN && get_color ( left_diag ) != color )
+      {
+        return false;
+      }
+    }
+    // Check right diagonal
+    int right_file = square.file + 1;
+    if ( right_file < 8 )
+    {
+      Square right_diag ( right_file, pawn_rank );
+      if ( get_piece ( right_diag ) == Piece::PAWN && get_color ( right_diag ) != color )
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check for knight attacks
+  const std::vector<std::pair<int, int>> knight_moves = { { -2, -1 }, { -2, 1 }, { -1, -2 }, { -1, 2 },
+                                                          { 1, -2 },  { 1, 2 },  { 2, -1 },  { 2, 1 } };
+  for ( const auto &[file_offset, rank_offset] : knight_moves )
+  {
+    int new_file = square.file + file_offset;
+    int new_rank = square.rank + rank_offset;
+    if ( new_file >= 0 && new_file < 8 && new_rank >= 0 && new_rank < 8 )
+    {
+      Square new_square ( new_file, new_rank );
+      if ( get_piece ( new_square ) == Piece::KNIGHT && get_color ( new_square ) != color )
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check for king attacks
+  const std::vector<std::pair<int, int>> king_moves = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 },
+                                                        { 0, 1 },   { 1, -1 }, { 1, 0 },  { 1, 1 } };
+  for ( const auto &[file_offset, rank_offset] : king_moves )
+  {
+    int new_file = square.file + file_offset;
+    int new_rank = square.rank + rank_offset;
+    if ( new_file >= 0 && new_file < 8 && new_rank >= 0 && new_rank < 8 )
+    {
+      Square new_square ( new_file, new_rank );
+      if ( get_piece ( new_square ) == Piece::KING && get_color ( new_square ) != color )
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check for sliding piece attacks (rook, bishop, queen)
+  const std::vector<std::pair<int, int>> sliding_directions = { { -1, 0 },  { 1, 0 },
+                                                                { 0, -1 },  { 0, 1 }, // Rook directions
+                                                                { -1, -1 }, { -1, 1 },
+                                                                { 1, -1 },  { 1, 1 } }; // Bishop directions
+
+  for ( const auto &[file_dir, rank_dir] : sliding_directions )
+  {
+    int new_file = square.file + file_dir;
+    int new_rank = square.rank + rank_dir;
+    while ( new_file >= 0 && new_file < 8 && new_rank >= 0 && new_rank < 8 )
+    {
+      Square new_square ( new_file, new_rank );
+      Piece  piece = get_piece ( new_square );
+      if ( piece != Piece::EMPTY )
+      {
+        if ( get_color ( new_square ) != color )
+        {
+          if ( ( file_dir == 0 || rank_dir == 0 ) // Rook direction
+               && ( piece == Piece::ROOK || piece == Piece::QUEEN ) )
+          {
+            return false;
+          }
+          if ( ( file_dir != 0 && rank_dir != 0 ) // Bishop direction
+               && ( piece == Piece::BISHOP || piece == Piece::QUEEN ) )
+          {
+            return false;
+          }
+        }
+        break;
+      }
+      new_file += file_dir;
+      new_rank += rank_dir;
+    }
+  }
+
+  return true;
+}
+
+void
+Board::unmake_move ( const Move &move )
+{
+  // Restore the piece to its original position
+  pieces[move.from.rank][move.from.file] = move.piece;
+  colors[move.from.rank][move.from.file] = side_to_move;
+  pieces[move.to.rank][move.to.file]     = move.captured;
+
+  // Restore the captured piece's color if there was a capture
+  if ( move.captured != Piece::EMPTY )
+  {
+    colors[move.to.rank][move.to.file] = ( side_to_move == Color::WHITE ) ? Color::BLACK : Color::WHITE;
+  }
+
+  // Handle special moves
+  if ( move.piece == Piece::PAWN )
+  {
+    // Handle en passant
+    if ( move.to == en_passant_square )
+    {
+      const int capture_rank             = ( side_to_move == Color::WHITE ) ? move.to.rank - 1 : move.to.rank + 1;
+      pieces[capture_rank][move.to.file] = Piece::PAWN;
+      colors[capture_rank][move.to.file] = ( side_to_move == Color::WHITE ) ? Color::BLACK : Color::WHITE;
+    }
+    // Handle promotion
+    if ( move.is_promotion )
+    {
+      pieces[move.from.rank][move.from.file] = Piece::PAWN;
+    }
+  }
+  else if ( move.is_castling )
+  {
+    // Move the rook back
+    pieces[move.castling_rook_from.rank][move.castling_rook_from.file] = Piece::ROOK;
+    colors[move.castling_rook_from.rank][move.castling_rook_from.file] = side_to_move;
+    pieces[move.castling_rook_to.rank][move.castling_rook_to.file]     = Piece::EMPTY;
+
+    // Restore castling rights
+    if ( side_to_move == Color::WHITE )
+    {
+      white_castle_kingside  = move.white_castle_kingside;
+      white_castle_queenside = move.white_castle_queenside;
+    }
+    else
+    {
+      black_castle_kingside  = move.black_castle_kingside;
+      black_castle_queenside = move.black_castle_queenside;
+    }
+  }
+
+  // Restore en passant square
+  en_passant_square = move.previous_en_passant;
+
+  // Restore halfmove clock
+  halfmove_clock = move.previous_halfmove_clock;
+
+  // Decrement fullmove number if it's black's turn
+  if ( side_to_move == Color::BLACK )
+  {
+    --fullmove_number;
+  }
+
+  // Switch side to move
+  side_to_move = ( side_to_move == Color::WHITE ) ? Color::BLACK : Color::WHITE;
+}
+
+std::string
+Board::get_fen () const
+{
+  std::string fen;
+
+  // Piece placement
+  for ( int rank = 7; rank >= 0; --rank )
+  {
+    int empty_count = 0;
+    for ( int file = 0; file < 8; ++file )
+    {
+      Piece piece = pieces[rank][file];
+      if ( piece == Piece::EMPTY )
+      {
+        ++empty_count;
+      }
+      else
+      {
+        if ( empty_count > 0 )
+        {
+          fen += std::to_string ( empty_count );
+          empty_count = 0;
+        }
+        char piece_char;
+        switch ( piece )
+        {
+        case Piece::PAWN:
+          piece_char = 'p';
+          break;
+        case Piece::KNIGHT:
+          piece_char = 'n';
+          break;
+        case Piece::BISHOP:
+          piece_char = 'b';
+          break;
+        case Piece::ROOK:
+          piece_char = 'r';
+          break;
+        case Piece::QUEEN:
+          piece_char = 'q';
+          break;
+        case Piece::KING:
+          piece_char = 'k';
+          break;
+        default:
+          piece_char = ' ';
+        }
+        if ( colors[rank][file] == Color::WHITE )
+        {
+          piece_char = toupper ( piece_char );
+        }
+        fen += piece_char;
+      }
+    }
+    if ( empty_count > 0 )
+    {
+      fen += std::to_string ( empty_count );
+    }
+    if ( rank > 0 )
+    {
+      fen += '/';
+    }
+  }
+
+  // Side to move
+  fen += ( side_to_move == Color::WHITE ) ? " w " : " b ";
+
+  // Castling rights
+  std::string castling;
+  if ( white_castle_kingside )
+    castling += 'K';
+  if ( white_castle_queenside )
+    castling += 'Q';
+  if ( black_castle_kingside )
+    castling += 'k';
+  if ( black_castle_queenside )
+    castling += 'q';
+  if ( castling.empty () )
+    castling = "-";
+  fen += castling + " ";
+
+  // En passant
+  if ( en_passant_square.is_valid () )
+  {
+    fen += en_passant_square.to_string () + " ";
+  }
+  else
+  {
+    fen += "- ";
+  }
+
+  // Halfmove clock and fullmove number
+  fen += std::to_string ( halfmove_clock ) + " " + std::to_string ( fullmove_number );
+
+  return fen;
+}
+
+bool
+Board::is_square_attacked ( Square square, Color attacker ) const
+{
+  // Check for pawn attacks
+  const int pawn_direction     = ( attacker == Color::WHITE ) ? 1 : -1;
   const int pawn_attacks[2][2] = { { -1, pawn_direction }, { 1, pawn_direction } };
 
   for ( const auto &attack : pawn_attacks )
@@ -745,9 +1086,9 @@ Board::is_square_safe ( Square square, Color color ) const
     if ( target_square.is_valid () )
     {
       Piece piece = get_piece ( target_square );
-      if ( piece == Piece::PAWN && get_color ( target_square ) != color )
+      if ( piece == Piece::PAWN && get_color ( target_square ) == attacker )
       {
-        return false;
+        return true;
       }
     }
   }
@@ -762,9 +1103,9 @@ Board::is_square_safe ( Square square, Color color ) const
     if ( target_square.is_valid () )
     {
       Piece piece = get_piece ( target_square );
-      if ( piece == Piece::KNIGHT && get_color ( target_square ) != color )
+      if ( piece == Piece::KNIGHT && get_color ( target_square ) == attacker )
       {
-        return false;
+        return true;
       }
     }
   }
@@ -778,9 +1119,9 @@ Board::is_square_safe ( Square square, Color color ) const
     if ( target_square.is_valid () )
     {
       Piece piece = get_piece ( target_square );
-      if ( piece == Piece::KING && get_color ( target_square ) != color )
+      if ( piece == Piece::KING && get_color ( target_square ) == attacker )
       {
-        return false;
+        return true;
       }
     }
   }
@@ -797,18 +1138,18 @@ Board::is_square_safe ( Square square, Color color ) const
       Piece piece = get_piece ( target_square );
       if ( piece != Piece::EMPTY )
       {
-        if ( get_color ( target_square ) != color )
+        if ( get_color ( target_square ) != attacker )
         {
           // Check if the piece can attack in this direction
           if ( ( dir[0] == 0 || dir[1] == 0 ) && // Rook or Queen attack
                ( piece == Piece::ROOK || piece == Piece::QUEEN ) )
           {
-            return false;
+            return true;
           }
           if ( ( dir[0] != 0 && dir[1] != 0 ) && // Bishop or Queen attack
                ( piece == Piece::BISHOP || piece == Piece::QUEEN ) )
           {
-            return false;
+            return true;
           }
         }
         break;
@@ -818,6 +1159,79 @@ Board::is_square_safe ( Square square, Color color ) const
     }
   }
 
+  return false;
+}
+
+bool
+Board::is_in_check ( Color color ) const
+{
+  // Find the king
+  Square king_square ( 0, 0 ); // Initialize with default coordinates
+  for ( int rank = 0; rank < 8; ++rank )
+  {
+    for ( int file = 0; file < 8; ++file )
+    {
+      Square square ( file, rank );
+      if ( get_piece ( square ) == Piece::KING && get_color ( square ) == color )
+      {
+        king_square = square;
+        break;
+      }
+    }
+  }
+
+  // Check if the king's square is attacked by the opponent
+  return is_square_attacked ( king_square, ( color == Color::WHITE ) ? Color::BLACK : Color::WHITE );
+}
+
+bool
+Board::is_move_legal ( const Move &move ) const
+{
+  // Basic validation
+  if ( !move.from.is_valid () || !move.to.is_valid () )
+  {
+    return false;
+  }
+
+  // Check if the piece exists and belongs to the side to move
+  if ( get_piece ( move.from ) != move.piece || get_color ( move.from ) != side_to_move )
+  {
+    return false;
+  }
+
+  // Check if the destination square is not occupied by a friendly piece
+  if ( get_piece ( move.to ) != Piece::EMPTY && get_color ( move.to ) == side_to_move )
+  {
+    return false;
+  }
+
+  // Make the move temporarily
+  Board temp_board = *this;
+  temp_board.make_move ( const_cast<Move &> ( move ) );
+
+  // Check if the move leaves the king in check
+  if ( temp_board.is_in_check ( side_to_move ) )
+  {
+    return false;
+  }
+
   return true;
+}
+
+Square
+Board::get_king_square ( Color color ) const
+{
+  for ( int rank = 0; rank < 8; ++rank )
+  {
+    for ( int file = 0; file < 8; ++file )
+    {
+      Square square ( file, rank );
+      if ( get_piece ( square ) == Piece::KING && get_color ( square ) == color )
+      {
+        return square;
+      }
+    }
+  }
+  throw std::runtime_error ( "King not found" );
 }
 } // namespace chess
