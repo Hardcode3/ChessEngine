@@ -288,7 +288,7 @@ bool Board::is_game_over() const {
 // 4. Pawn can en passant capture
 // 5. Pawn can be promoted
 void Board::generate_pawn_moves(std::vector<Move>& moves, Square square) const {
-    Color pawn_color = this->get_color(square);
+    const Color pawn_color = this->get_color(square);
     const int direction = (pawn_color == Color::WHITE) ? 1 : -1;  // White moves up, black moves down
     const int starting_rank = (pawn_color == Color::WHITE) ? 1 : 6;  // White starts at rank 1, black at rank 6
     const int promotion_rank = (pawn_color == Color::WHITE) ? 7 : 0;  // White promotes at rank 7, black at rank 0
@@ -344,8 +344,31 @@ void Board::generate_pawn_moves(std::vector<Move>& moves, Square square) const {
     }
 }
 
+// Knight moves in an L-shape: two squares in one direction and then one square perpendicular
 void Board::generate_knight_moves(std::vector<Move>& moves, Square square) const {
-    // TODO: Implement
+
+    const int directions[8][2] = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+
+    const Color knight_color = this->get_color(square);
+
+    for (const auto& dir: directions)
+    {
+        const Square target_square(square.file + dir[0], square.rank + dir[1]);
+        const Piece target_piece = this->get_piece(target_square);
+
+        if (target_piece == Piece::EMPTY)
+        {
+            moves.emplace_back(square, target_square, Piece::KNIGHT);
+        }
+        else {
+            if (knight_color != this->get_color(target_square)) {
+                moves.emplace_back(square, target_square, Piece::KNIGHT, target_piece);
+            }
+        }
+    }
 }
 
 void Board::generate_bishop_moves(std::vector<Move>& moves, Square square) const {
@@ -357,8 +380,7 @@ void Board::generate_bishop_moves(std::vector<Move>& moves, Square square) const
         {-1, -1}  // down-left
     };
 
-    // Get the bishop's color
-    Color bishop_color = this->get_color(square);
+    const Color bishop_color = this->get_color(square);
 
     // Check each direction
     for (const auto& dir : directions) {
@@ -367,8 +389,8 @@ void Board::generate_bishop_moves(std::vector<Move>& moves, Square square) const
 
         // Keep moving in the current direction until we hit the edge of the board
         while (new_rank >= 0 && new_rank < 8 && new_file >= 0 && new_file < 8) {
-            Square target_square(new_file, new_rank);
-            Piece target_piece = this->get_piece(target_square);
+            const Square target_square(new_file, new_rank);
+            const Piece target_piece = this->get_piece(target_square);
 
             // If the square is empty, add the move
             if (target_piece == Piece::EMPTY) {
