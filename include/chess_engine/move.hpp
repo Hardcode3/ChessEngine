@@ -22,6 +22,14 @@ struct Move {
       : from(f), to(t), piece(p), captured(Piece::EMPTY), is_promotion(false),
         promotion_piece(Piece::EMPTY) {}
 
+  Move(Square f, Square t, Piece p, Piece c)
+      : from(f), to(t), piece(p), captured(c), is_promotion(false),
+        promotion_piece(Piece::EMPTY) {}
+
+  Move(Square f, Square t, Piece p, Piece c, bool prom, Piece prom_piece)
+      : from(f), to(t), piece(p), captured(c), is_promotion(prom),
+        promotion_piece(prom_piece) {}
+
   std::string to_uci() const;
 };
 
