@@ -208,6 +208,65 @@ Board::make_move ( Move &move )
       this->pieces[move.to.rank][move.to.file] = move.promotion_piece;
     }
   }
+  else if ( move.is_castling )
+  {
+    // Move the rook
+    this->pieces[move.castling_rook_to.rank][move.castling_rook_to.file]     = Piece::ROOK;
+    this->colors[move.castling_rook_to.rank][move.castling_rook_to.file]     = this->side_to_move;
+    this->pieces[move.castling_rook_from.rank][move.castling_rook_from.file] = Piece::EMPTY;
+
+    // Update castling rights
+    if ( this->side_to_move == Color::WHITE )
+    {
+      this->white_castle_kingside  = false;
+      this->white_castle_queenside = false;
+    }
+    else
+    {
+      this->black_castle_kingside  = false;
+      this->black_castle_queenside = false;
+    }
+  }
+  else if ( move.piece == Piece::KING )
+  {
+    // Update castling rights when king moves
+    if ( this->side_to_move == Color::WHITE )
+    {
+      this->white_castle_kingside  = false;
+      this->white_castle_queenside = false;
+    }
+    else
+    {
+      this->black_castle_kingside  = false;
+      this->black_castle_queenside = false;
+    }
+  }
+  else if ( move.piece == Piece::ROOK )
+  {
+    // Update castling rights when rook moves
+    if ( this->side_to_move == Color::WHITE )
+    {
+      if ( move.from.file == 0 )
+      {
+        this->white_castle_queenside = false;
+      }
+      else if ( move.from.file == 7 )
+      {
+        this->white_castle_kingside = false;
+      }
+    }
+    else
+    {
+      if ( move.from.file == 0 )
+      {
+        this->black_castle_queenside = false;
+      }
+      else if ( move.from.file == 7 )
+      {
+        this->black_castle_kingside = false;
+      }
+    }
+  }
 
   // Update game state
   this->side_to_move = ( this->side_to_move == Color::WHITE ) ? Color::BLACK : Color::WHITE;
@@ -608,9 +667,8 @@ Board::generate_king_moves ( std::vector<Move> &moves, Square square ) const
     }
   }
 
-  // Generate castling moves if the king hasn't moved
-  // King is on its starting square (file 4)
-  if ( square.rank == king_rank && square.file == 4 )
+  // Generate castling moves if the king hasn't moved and is not in check
+  if ( square.rank == king_rank && square.file == 4 && !is_square_safe ( square, king_color ) )
   {
     // Kingside castling
     if ( ( king_color == Color::WHITE && this->white_castle_kingside ) ||
@@ -632,7 +690,12 @@ Board::generate_king_moves ( std::vector<Move> &moves, Square square ) const
         Square rook_square ( 7, king_rank );
         if ( this->get_piece ( rook_square ) == Piece::ROOK && this->get_color ( rook_square ) == king_color )
         {
-          moves.emplace_back ( square, Square ( 6, king_rank ), Piece::KING );
+          // Create a special castling move
+          Move castling_move ( square, Square ( 6, king_rank ), Piece::KING );
+          castling_move.is_castling        = true;
+          castling_move.castling_rook_from = rook_square;
+          castling_move.castling_rook_to   = Square ( 5, king_rank );
+          moves.push_back ( castling_move );
         }
       }
     }
@@ -657,7 +720,12 @@ Board::generate_king_moves ( std::vector<Move> &moves, Square square ) const
         Square rook_square ( 0, king_rank );
         if ( this->get_piece ( rook_square ) == Piece::ROOK && this->get_color ( rook_square ) == king_color )
         {
-          moves.emplace_back ( square, Square ( 2, king_rank ), Piece::KING );
+          // Create a special castling move
+          Move castling_move ( square, Square ( 2, king_rank ), Piece::KING );
+          castling_move.is_castling        = true;
+          castling_move.castling_rook_from = rook_square;
+          castling_move.castling_rook_to   = Square ( 3, king_rank );
+          moves.push_back ( castling_move );
         }
       }
     }
