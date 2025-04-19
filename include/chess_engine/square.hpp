@@ -48,6 +48,12 @@ struct Square
   {
     return file == other.file && rank == other.rank;
   }
+
+  std::string
+  to_string () const
+  {
+    return std::string ( 1, 'a' + file ) + std::to_string ( rank + 1 );
+  }
 };
 
 } // namespace chess
