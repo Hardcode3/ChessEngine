@@ -1,15 +1,12 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 namespace chess {
 
-enum class Color : bool {
-    WHITE = false,
-    BLACK = true
-};
+enum class Color : bool { WHITE = false, BLACK = true };
 
 } // namespace chess
