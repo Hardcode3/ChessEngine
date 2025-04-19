@@ -282,8 +282,66 @@ bool Board::is_game_over() const {
     return moves.empty();
 }
 
+// 1. Pawn can move forward one square
+// 2. Pawn can move forward two squares from its starting position
+// 3. Pawn can capture diagonally
+// 4. Pawn can en passant capture
+// 5. Pawn can be promoted
 void Board::generate_pawn_moves(std::vector<Move>& moves, Square square) const {
-    // TODO: Implement
+    Color pawn_color = this->get_color(square);
+    const int direction = (pawn_color == Color::WHITE) ? 1 : -1;  // White moves up, black moves down
+    const int starting_rank = (pawn_color == Color::WHITE) ? 1 : 6;  // White starts at rank 1, black at rank 6
+    const int promotion_rank = (pawn_color == Color::WHITE) ? 7 : 0;  // White promotes at rank 7, black at rank 0
+
+    // Forward moves
+    const Square one_forward(square.file, square.rank + direction);
+    if (one_forward.rank >= 0 && one_forward.rank < 8 && this->get_piece(one_forward) == Piece::EMPTY) {
+        // Check for promotion
+        if (one_forward.rank == promotion_rank) {
+            moves.emplace_back(square, one_forward, Piece::PAWN, Piece::EMPTY, true, Piece::QUEEN);
+            moves.emplace_back(square, one_forward, Piece::PAWN, Piece::EMPTY, true, Piece::ROOK);
+            moves.emplace_back(square, one_forward, Piece::PAWN, Piece::EMPTY, true, Piece::BISHOP);
+            moves.emplace_back(square, one_forward, Piece::PAWN, Piece::EMPTY, true, Piece::KNIGHT);
+        } else {
+            moves.emplace_back(square, one_forward, Piece::PAWN);
+        }
+
+        // Two squares forward from starting position
+        if (square.rank == starting_rank) {
+            const Square two_forward(square.file, square.rank + 2 * direction);
+            if (this->get_piece(two_forward) == Piece::EMPTY) {
+                moves.emplace_back(square, two_forward, Piece::PAWN);
+            }
+        }
+    }
+
+    // Diagonal captures
+    for (int file_offset : {-1, 1}) {
+        const int target_file = square.file + file_offset;
+        if (target_file >= 0 && target_file < 8) {
+            const Square capture_square(target_file, square.rank + direction);
+            if (capture_square.rank >= 0 && capture_square.rank < 8) {
+                const Piece target_piece = this->get_piece(capture_square);
+
+                // Regular capture
+                if (target_piece != Piece::EMPTY && this->get_color(capture_square) != pawn_color) {
+                    if (capture_square.rank == promotion_rank) {
+                        moves.emplace_back(square, capture_square, Piece::PAWN, target_piece, true, Piece::QUEEN);
+                        moves.emplace_back(square, capture_square, Piece::PAWN, target_piece, true, Piece::ROOK);
+                        moves.emplace_back(square, capture_square, Piece::PAWN, target_piece, true, Piece::BISHOP);
+                        moves.emplace_back(square, capture_square, Piece::PAWN, target_piece, true, Piece::KNIGHT);
+                    } else {
+                        moves.emplace_back(square, capture_square, Piece::PAWN, target_piece);
+                    }
+                }
+
+                // En passant capture
+                if (capture_square == this->en_passant_square) {
+                    moves.emplace_back(square, capture_square, Piece::PAWN, Piece::PAWN);
+                }
+            }
+        }
+    }
 }
 
 void Board::generate_knight_moves(std::vector<Move>& moves, Square square) const {
@@ -291,7 +349,46 @@ void Board::generate_knight_moves(std::vector<Move>& moves, Square square) const
 }
 
 void Board::generate_bishop_moves(std::vector<Move>& moves, Square square) const {
-    // TODO: Implement
+    // Define the four diagonal directions a bishop can move
+    const int directions[4][2] = {
+        {1, 1},   // up-right
+        {1, -1},  // up-left
+        {-1, 1},  // down-right
+        {-1, -1}  // down-left
+    };
+
+    // Get the bishop's color
+    Color bishop_color = this->get_color(square);
+
+    // Check each direction
+    for (const auto& dir : directions) {
+        int new_rank = square.rank + dir[0];
+        int new_file = square.file + dir[1];
+
+        // Keep moving in the current direction until we hit the edge of the board
+        while (new_rank >= 0 && new_rank < 8 && new_file >= 0 && new_file < 8) {
+            Square target_square(new_file, new_rank);
+            Piece target_piece = this->get_piece(target_square);
+
+            // If the square is empty, add the move
+            if (target_piece == Piece::EMPTY) {
+                moves.emplace_back(square, target_square, Piece::BISHOP);
+            }
+            // If the square has an opponent's piece, add the capture and stop
+            else if (this->get_color(target_square) != bishop_color) {
+                moves.emplace_back(square, target_square, Piece::BISHOP);
+                break;
+            }
+            // If the square has our own piece, stop
+            else {
+                break;
+            }
+
+            // Move to the next square in this direction
+            new_rank += dir[0];
+            new_file += dir[1];
+        }
+    }
 }
 
 void Board::generate_rook_moves(std::vector<Move>& moves, Square square) const {

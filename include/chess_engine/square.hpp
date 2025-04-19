@@ -29,6 +29,10 @@ struct Square {
     Square(uint8_t f, uint8_t r) : file(f), rank(r) {}
     Square(const std::string& notation); // e.g., "e4"
 
+    bool is_valid() const {
+        return file >= 0 && file < 8 && rank >= 0 && rank < 8;
+    }
+
     bool operator==(const Square& other) const {
         return file == other.file && rank == other.rank;
     }
