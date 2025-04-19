@@ -66,6 +66,11 @@ public:
   }
   Color get_side_to_move() const { return side_to_move; }
   bool is_game_over() const;
+
+  bool is_square_safe(Square square, Color color) const;
+
+private:
+  // ... existing code ...
 };
 
 } // namespace chess
