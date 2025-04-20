@@ -73,3 +73,69 @@ TEST(PieceTest, ToChar) {
         EXPECT_EQ(piece.to_char(), test_case.fen_char);
     }
 }
+
+TEST(PieceTest, IsValidForValidPieces) {
+    for (const auto& test_case : VALID_PIECES) {
+        if (test_case.type != Piece::Type::EMPTY) {  // Skip empty pieces
+            Piece piece(test_case.type, test_case.color);
+            EXPECT_TRUE(piece.is_valid()) << "Piece " << test_case.fen_char << " should be valid";
+        }
+    }
+}
+
+TEST(PieceTest, IsValidForEmptyPiece) {
+    Piece empty_piece;
+    EXPECT_FALSE(empty_piece.is_valid());
+}
+
+TEST(PieceTest, IsValidForEmptyTypeWithColor) {
+    Piece invalid_type(Piece::Type::EMPTY, Piece::Color::WHITE);
+    EXPECT_FALSE(invalid_type.is_valid());
+}
+
+TEST(PieceTest, IsValidForValidTypeWithoutColor) {
+    Piece invalid_color(Piece::Type::PAWN, Piece::Color::NO_COLOR);
+    EXPECT_FALSE(invalid_color.is_valid());
+}
+
+TEST(PieceTest, IsValidForInvalidCharacters) {
+    for (char c : INVALID_CHARS) {
+        Piece piece(c);
+        EXPECT_FALSE(piece.is_valid()) << "Invalid character " << c << " should create invalid piece";
+    }
+}
+
+TEST(PieceTest, EqualityForSamePieces) {
+    Piece white_pawn1(Piece::Type::PAWN, Piece::Color::WHITE);
+    Piece white_pawn2(Piece::Type::PAWN, Piece::Color::WHITE);
+    EXPECT_TRUE(white_pawn1 == white_pawn2);
+    EXPECT_FALSE(white_pawn1 != white_pawn2);
+}
+
+TEST(PieceTest, EqualityForDifferentTypes) {
+    Piece white_pawn(Piece::Type::PAWN, Piece::Color::WHITE);
+    Piece white_knight(Piece::Type::KNIGHT, Piece::Color::WHITE);
+    EXPECT_FALSE(white_pawn == white_knight);
+    EXPECT_TRUE(white_pawn != white_knight);
+}
+
+TEST(PieceTest, EqualityForDifferentColors) {
+    Piece white_pawn(Piece::Type::PAWN, Piece::Color::WHITE);
+    Piece black_pawn(Piece::Type::PAWN, Piece::Color::BLACK);
+    EXPECT_FALSE(white_pawn == black_pawn);
+    EXPECT_TRUE(white_pawn != black_pawn);
+}
+
+TEST(PieceTest, EqualityForEmptyPieces) {
+    Piece empty1;
+    Piece empty2;
+    EXPECT_TRUE(empty1 == empty2);
+    EXPECT_FALSE(empty1 != empty2);
+}
+
+TEST(PieceTest, EqualityForEmptyVsNonEmpty) {
+    Piece white_pawn(Piece::Type::PAWN, Piece::Color::WHITE);
+    Piece empty;
+    EXPECT_FALSE(white_pawn == empty);
+    EXPECT_TRUE(white_pawn != empty);
+}

@@ -73,4 +73,8 @@ char Piece::to_char() const {
   }
   return type_char;
 }
+
+bool Piece::operator==(const Piece& other) const noexcept { return type == other.type && color == other.color; }
+
+bool Piece::operator!=(const Piece& other) const noexcept { return !(*this == other); }
 }  // namespace chess

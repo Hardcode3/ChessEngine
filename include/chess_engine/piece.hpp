@@ -19,6 +19,10 @@ class Piece {
   Piece(char c);
 
   char to_char() const;
+  bool is_valid() const noexcept { return type != Type::EMPTY && color != Color::NO_COLOR; }
+
+  bool operator==(const Piece& other) const noexcept;
+  bool operator!=(const Piece& other) const noexcept;
 };
 
 }  // namespace chess
