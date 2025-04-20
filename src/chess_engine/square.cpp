@@ -24,7 +24,8 @@ Square::Square(const std::string &notation) {
 
 std::string Square::to_string() const {
   if (file > 7 || rank > 7) {
-    throw std::invalid_argument(std::format("Invalid position for file {}, rank {} cannot be converted to notation", file, rank));
+    throw std::invalid_argument(
+        std::format("Invalid position for file {}, rank {} cannot be converted to notation", file, rank));
   }
   return std::string(1, 'a' + file) + std::to_string(rank + 1);
 }
