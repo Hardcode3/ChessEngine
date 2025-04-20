@@ -22,7 +22,7 @@ TEST(BoardTest, DefaultConstructor) {
 
 TEST(BoardTest, LoadFENStartingPositionWhitePieces) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     // Test white back rank pieces
     EXPECT_EQ(board.get_piece(Square(0, 0)), Piece::ROOK);
@@ -45,7 +45,7 @@ TEST(BoardTest, LoadFENStartingPositionWhitePieces) {
 
 TEST(BoardTest, LoadFENStartingPositionBlackPieces) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     // Test black back rank pieces
     EXPECT_EQ(board.get_piece(Square(0, 7)), Piece::ROOK);
@@ -68,7 +68,7 @@ TEST(BoardTest, LoadFENStartingPositionBlackPieces) {
 
 TEST(BoardTest, LoadFENStartingPositionEmptySquares) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     // Test empty squares
     for (int rank = 2; rank < 6; ++rank) {
@@ -83,7 +83,7 @@ TEST(BoardTest, LoadFENStartingPositionEmptySquares) {
 
 TEST(BoardTest, GenerateLegalMovesFromStartingPosition) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     auto moves = board.generate_legal_moves();
 
@@ -103,7 +103,7 @@ TEST(BoardTest, GenerateLegalMovesFromStartingPosition) {
 
 TEST(BoardTest, MakeMoveFromStartingPosition) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     // Make e2e4
     const Square from(4, 1);
@@ -122,7 +122,7 @@ TEST(BoardTest, MakeMoveFromStartingPosition) {
 
 TEST(BoardTest, EvaluatePositionIsNull) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     // Starting position should be equal
     EXPECT_EQ(board.evaluate(), 0);
@@ -130,7 +130,7 @@ TEST(BoardTest, EvaluatePositionIsNull) {
 
 TEST(BoardTest, EvaluatePositionAdvantageToWhite) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     Move capture(Square(0, 1), Square(0, 6), Piece::PAWN, Piece::PAWN);
     board.make_move(capture);
@@ -141,7 +141,7 @@ TEST(BoardTest, EvaluatePositionAdvantageToWhite) {
 
 TEST(BoardTest, UciToMove) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
     Move move = board.uci_to_move("e2e4");
 
     EXPECT_EQ(move.from.file, 4);
@@ -153,7 +153,7 @@ TEST(BoardTest, UciToMove) {
 
 TEST(BoardTest, MoveToUci) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
     Move move(Square(4, 1), Square(4, 3), Piece::PAWN);
     std::string uci = board.move_to_uci(move);
 
@@ -162,7 +162,7 @@ TEST(BoardTest, MoveToUci) {
 
 TEST(BoardTest, StartingPositionIsNotGameOver) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     EXPECT_FALSE(board.is_game_over());
 }
@@ -193,7 +193,7 @@ TEST(BoardTest, InsufficientMaterialIsGameOver) {
 
 TEST(BoardTest, SafeSquares) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
 
     EXPECT_TRUE(board.is_square_safe(Square(4, 0), Color::WHITE)); // White king
     EXPECT_TRUE(board.is_square_safe(Square(4, 7), Color::BLACK)); // Black king
@@ -201,7 +201,7 @@ TEST(BoardTest, SafeSquares) {
 
 TEST(BoardTest, UnsafeSquares) {
     Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+    board.load_fen(Board::STARTING_POSITION);
     Move move(Square(4, 1), Square(4, 3), Piece::PAWN);
     board.make_move(move);
 

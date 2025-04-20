@@ -5,13 +5,8 @@
 #include <string>
 #include <vector>
 
-namespace chess
-{
+namespace chess {
 
-enum class Color : bool
-{
-  WHITE = false,
-  BLACK = true
-};
+enum class Color : bool { WHITE = false, BLACK = true };
 
-} // namespace chess
+}  // namespace chess
