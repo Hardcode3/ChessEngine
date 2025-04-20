@@ -17,4 +17,15 @@ Square::Square(const std::string &notation) {
   }
 }
 
+std::string Square::to_string() const {
+  if (!this->is_valid()) {
+    return "??";
+  }
+  return std::string(1, 'a' + file) + std::to_string(rank + 1);
+}
+
+bool Square::operator==(const Square &other) const { return this->file == other.file && this->rank == other.rank; }
+
+bool Square::operator!=(const Square &other) const { return !(*this == other); }
+
 }  // namespace chess
