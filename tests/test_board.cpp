@@ -192,3 +192,31 @@ TEST_F(BoardTest, GetPieceFromEmptySquare) {
             << "Expected non colored square at (" << square.file << ", " << square.rank << ")";
     }
 }
+
+TEST_F(BoardTest, PrintBoard) {
+    // Set up some pieces
+    board.set_piece(Square(0, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE));
+    board.set_piece(Square(1, 0), Piece(Piece::Type::KING, Piece::Color::BLACK));
+    board.set_piece(Square(0, 1), Piece(Piece::Type::KNIGHT, Piece::Color::WHITE));
+    board.set_piece(Square(7, 7), Piece(Piece::Type::ROOK, Piece::Color::BLACK));
+    board.set_piece(Square(3, 5), Piece(Piece::Type::QUEEN, Piece::Color::WHITE));
+
+    std::string expected_output = "  +--------------------------+\n"
+                                  "8 |  .  .  .  .  .  .  .  r  |\n"
+                                  "7 |  .  .  .  .  .  .  .  .  |\n"
+                                  "6 |  .  .  .  Q  .  .  .  .  |\n"
+                                  "5 |  .  .  .  .  .  .  .  .  |\n"
+                                  "4 |  .  .  .  .  .  .  .  .  |\n"
+                                  "3 |  .  .  .  .  .  .  .  .  |\n"
+                                  "2 |  N  .  .  .  .  .  .  .  |\n"
+                                  "1 |  P  k  .  .  .  .  .  .  |\n"
+                                  "  +--------------------------+\n"
+                                  "     a  b  c  d  e  f  g  h\n";
+
+    std::stringstream ss;
+    ss << board;
+
+    ASSERT_STREQ(expected_output.c_str(), ss.str().c_str());
+}
+
+

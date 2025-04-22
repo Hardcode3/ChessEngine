@@ -22,6 +22,8 @@ class Board {
 
   bool is_empty(Square square) const;
 
+  friend std::ostream& operator<<(std::ostream& os, const Board& board);
+
  private:
   std::array<Piece, BOARD_SIZE * BOARD_SIZE> board;
 };
