@@ -1,6 +1,5 @@
 #include <chess_engine/game.hpp>
 #include <sstream>
-#include <iostream>
 
 namespace chess {
 
@@ -31,7 +30,6 @@ void Game::from_fen(const std::string& fen) {
     } else {
       const Square square(file, rank);
       Piece piece(c);
-      std::cout << "Setting piece " << piece.to_char() << " to " << square.to_string() << std::endl;
       board.set_piece(square, piece);
       ++file;
     }
