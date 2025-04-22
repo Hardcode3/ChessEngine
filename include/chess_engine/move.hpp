@@ -8,7 +8,7 @@
 
 namespace chess {
 
-class GameState;
+struct GameState;
 
 struct CastlingInfo {
   Square rook_from;

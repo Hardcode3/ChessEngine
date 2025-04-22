@@ -16,8 +16,8 @@ void Game::from_fen(const std::string& fen) {
 
   // Piece placement (starting from a8)
   // from top to bottom and left to right
-  u_int8_t file = 0;
-  u_int8_t rank = 7;
+  uint8_t file = 0;
+  uint8_t rank = 7;
   iss >> token;
 
   // Parsing the first part of the FEN string e.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
