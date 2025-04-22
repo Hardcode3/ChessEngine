@@ -1,5 +1,6 @@
 #include <chess_engine/game.hpp>
 #include <sstream>
+#include <iostream>
 
 namespace chess {
 
@@ -17,19 +18,20 @@ void Game::from_fen(const std::string& fen) {
   // Piece placement (starting from a8)
   // from top to bottom and left to right
   uint8_t file = 0;
-  uint8_t rank = 7;
+  uint8_t rank = 0;
   iss >> token;
 
   // Parsing the first part of the FEN string e.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
   for (auto c : token) {
     if (c == '/') {
-      --rank;
+      rank++;
       file = 0;
     } else if (isdigit(c)) {
       file += c - '0';
     } else {
       const Square square(file, rank);
       Piece piece(c);
+      std::cout << "Setting piece " << piece.to_char() << " to " << square.to_string() << std::endl;
       board.set_piece(square, piece);
       ++file;
     }

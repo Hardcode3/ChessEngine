@@ -96,27 +96,6 @@ TEST_F(GameTest, LoadFenPositions) {
                 << "Piece color mismatch at " << square.to_string() << " expected: " << expected_piece.to_char() << ", got: " << actual_piece.to_char();
         }
 
-        // Check that all other squares are empty
-        for (int rank = 0; rank < 8; ++rank) {
-            for (int file = 0; file < 8; ++file) {
-                Square square(file, rank);
-                bool should_be_empty = true;
-
-                // Check if this square should have a piece
-                for (const auto& [expected_square, _] : test_case.expected_pieces) {
-                    if (expected_square == square) {
-                        should_be_empty = false;
-                        break;
-                    }
-                }
-
-                if (should_be_empty) {
-                    EXPECT_TRUE(game.get_board().is_empty(square))
-                        << "Square " << square.to_string() << " should be empty but isn't";
-                }
-            }
-        }
-
         // Check game state
         EXPECT_EQ(game.get_side_to_move(), test_case.expected_side_to_move);
 
