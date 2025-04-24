@@ -11,6 +11,9 @@ Game::Game() {
 void Game::from_fen(const std::string& fen) {
   // Example FEN for starting position: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+  // Reset the board before loading the new FEN
+  board.clear();
+
   std::istringstream iss(fen);
   std::string token;
 
@@ -48,11 +51,55 @@ void Game::from_fen(const std::string& fen) {
   // En passant
   iss >> token;
   if (token != "-") {
-    this->state.en_passant_square = Square(token);
+    this->state.en_passant_square.emplace(Square(token));
   }
 
   iss >> this->state.halfmove_clock;
   iss >> this->state.fullmove_number;
+}
+
+std::string Game::get_fen() const {
+  std::string fen;
+
+  for (int r = 7; r >= 0; r--){
+    for (uint8_t f = 0; f < BOARD_SIZE; f++){
+      const Piece p = board.get_piece(f, static_cast<uint8_t>(r));
+      if (p.type == Piece::Type::EMPTY){
+        if (fen.size() > 0 && isdigit(fen.back())){
+          fen.back() = static_cast<int>(fen.back()) + 1;
+        } else {
+          fen += '1';
+        }
+      } else {
+        fen += p.to_char();
+      }
+    }
+    if (r != 0){
+      fen += '/';
+    }
+  }
+
+  fen += ' ';
+  fen += (this->get_side_to_move() == Piece::Color::WHITE) ? 'w' : 'b';
+
+  // Castling rights
+  fen += ' ';
+  if (this->state.white_can_castle_kingside) { fen += 'K'; }
+  if (this->state.white_can_castle_queenside) { fen += 'Q'; }
+  if (this->state.black_can_castle_kingside) { fen += 'k'; }
+  if (this->state.black_can_castle_queenside) { fen += 'q'; }
+  if (fen.back() == ' ') { fen += '-'; }
+
+  // En passant
+  fen += ' ';
+  fen += (this->state.en_passant_square.has_value() ? this->state.en_passant_square.value().to_string() : "-");
+
+  fen += ' ';
+  fen += std::to_string(this->state.halfmove_clock);
+  fen += ' ';
+  fen += std::to_string(this->state.fullmove_number);
+
+  return fen;
 }
 
 }  // namespace chess

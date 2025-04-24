@@ -115,10 +115,25 @@ TEST_F(GameTest, LoadFenPositions) {
         if (test_case.expected_en_passant) {
             EXPECT_EQ(state.en_passant_square, test_case.expected_en_passant);
         } else {
-            EXPECT_EQ(state.en_passant_square, Square("a1")); // default placeholder square is a1
+            EXPECT_EQ(state.en_passant_square, std::nullopt);
         }
 
         EXPECT_EQ(state.halfmove_clock, test_case.expected_halfmove_clock);
         EXPECT_EQ(state.fullmove_number, test_case.expected_fullmove_number);
+    }
+}
+
+TEST_F(GameTest, GetFenMatchesSetFen) {
+    for (const auto& test_case : test_cases) {
+        SCOPED_TRACE(test_case.description);
+
+        game.from_fen(test_case.fen);
+        std::string output_fen = game.get_fen();
+
+        // Compare the output FEN with the input FEN
+        EXPECT_EQ(output_fen, test_case.fen)
+            << "FEN mismatch\nInput:  " << test_case.fen
+            << "\nOutput: " << output_fen;
+
     }
 }

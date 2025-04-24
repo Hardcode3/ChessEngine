@@ -8,8 +8,16 @@ Piece Board::get_piece(const Square& square) const {
   const uint8_t index = square.rank * BOARD_SIZE + square.file;
   return board[index];
 }
+Piece Board::get_piece(const uint8_t& file, const uint8_t& rank) const {
+  const uint8_t index = rank * BOARD_SIZE + file;
+  return board[index];
+}
 void Board::set_piece(const Square& square, Piece piece) {
-  const int index = square.rank * BOARD_SIZE + square.file;
+  const uint8_t index = square.rank * BOARD_SIZE + square.file;
+  board[index] = piece;
+}
+void Board::set_piece(const uint8_t& file, const uint8_t& rank, Piece piece) {
+  const uint8_t index = rank * BOARD_SIZE + file;
   board[index] = piece;
 }
 

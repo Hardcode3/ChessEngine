@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <chess_engine/piece.hpp>
 #include <chess_engine/square.hpp>
 
@@ -11,7 +12,7 @@ struct GameState {
   bool black_can_castle_kingside = false;
   bool black_can_castle_queenside = false;
   Piece::Color side_to_move = Piece::Color::WHITE;
-  Square en_passant_square = Square("a1");  // Placeholder for no square
+  std::optional<Square> en_passant_square;
   uint16_t halfmove_clock = 0;
   uint16_t fullmove_number = 1;
 };

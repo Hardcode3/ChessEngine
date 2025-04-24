@@ -14,9 +14,11 @@ class Board {
   Board() : board{} {}
 
   Piece get_piece(const Square& square) const;
+  Piece get_piece(const uint8_t& file, const uint8_t& rank) const;
+  void set_piece(const Square& square, Piece piece);
+  void set_piece(const uint8_t& file, const uint8_t& rank, Piece piece);
   std::vector<Square> get_pieces(Piece::Type type, Piece::Color color) const;
   std::vector<Square> get_pieces(Piece::Color color) const;
-  void set_piece(const Square& square, Piece piece);
 
   void clear();
 
