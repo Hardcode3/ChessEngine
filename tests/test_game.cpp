@@ -27,18 +27,21 @@ protected:
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
             "Standard starting position",
             {
-                {Square(0, 0), Piece('r')}, {Square(1, 0), Piece('n')}, {Square(2, 0), Piece('b')},
-                {Square(3, 0), Piece('q')}, {Square(4, 0), Piece('k')}, {Square(5, 0), Piece('b')},
-                {Square(6, 0), Piece('n')}, {Square(7, 0), Piece('r')},
-                {Square(0, 1), Piece('p')}, {Square(1, 1), Piece('p')}, {Square(2, 1), Piece('p')},
-                {Square(3, 1), Piece('p')}, {Square(4, 1), Piece('p')}, {Square(5, 1), Piece('p')},
-                {Square(6, 1), Piece('p')}, {Square(7, 1), Piece('p')},
-                {Square(0, 6), Piece('P')}, {Square(1, 6), Piece('P')}, {Square(2, 6), Piece('P')},
-                {Square(3, 6), Piece('P')}, {Square(4, 6), Piece('P')}, {Square(5, 6), Piece('P')},
-                {Square(6, 6), Piece('P')}, {Square(7, 6), Piece('P')},
-                {Square(0, 7), Piece('R')}, {Square(1, 7), Piece('N')}, {Square(2, 7), Piece('B')},
-                {Square(3, 7), Piece('Q')}, {Square(4, 7), Piece('K')}, {Square(5, 7), Piece('B')},
-                {Square(6, 7), Piece('N')}, {Square(7, 7), Piece('R')}
+                // Black pieces on ranks 8 and 7 (y = 0, 1)
+                {Square(0, 0), Piece('R')}, {Square(1, 0), Piece('N')}, {Square(2, 0), Piece('B')},
+                {Square(3, 0), Piece('Q')}, {Square(4, 0), Piece('K')}, {Square(5, 0), Piece('B')},
+                {Square(6, 0), Piece('N')}, {Square(7, 0), Piece('R')},
+                {Square(0, 1), Piece('P')}, {Square(1, 1), Piece('P')}, {Square(2, 1), Piece('P')},
+                {Square(3, 1), Piece('P')}, {Square(4, 1), Piece('P')}, {Square(5, 1), Piece('P')},
+                {Square(6, 1), Piece('P')}, {Square(7, 1), Piece('P')},
+
+                // White pieces on ranks 2 and 1 (y = 6, 7)
+                {Square(0, 6), Piece('p')}, {Square(1, 6), Piece('p')}, {Square(2, 6), Piece('p')},
+                {Square(3, 6), Piece('p')}, {Square(4, 6), Piece('p')}, {Square(5, 6), Piece('p')},
+                {Square(6, 6), Piece('p')}, {Square(7, 6), Piece('p')},
+                {Square(0, 7), Piece('r')}, {Square(1, 7), Piece('n')}, {Square(2, 7), Piece('b')},
+                {Square(3, 7), Piece('q')}, {Square(4, 7), Piece('k')}, {Square(5, 7), Piece('b')},
+                {Square(6, 7), Piece('n')}, {Square(7, 7), Piece('r')}
             },
             Piece::Color::WHITE,
             true, true, true, true,
@@ -58,8 +61,8 @@ protected:
             "4k3/8/8/8/8/8/8/4K3 b - - 5 10",
             "Kings only, black to move",
             {
-                {Square(4, 0), Piece('k')},
-                {Square(4, 7), Piece('K')}
+                {Square(4, 7), Piece('k')},
+                {Square(4, 0), Piece('K')}
             },
             Piece::Color::BLACK,
             false, false, false, false,
@@ -70,8 +73,12 @@ protected:
             "r3k2r/8/8/8/8/8/8/R3K2R w KQkq e3 0 1",
             "Castling setup with en passant",
             {
-                {Square(0, 0), Piece('r')}, {Square(4, 0), Piece('k')}, {Square(7, 0), Piece('r')},
-                {Square(0, 7), Piece('R')}, {Square(4, 7), Piece('K')}, {Square(7, 7), Piece('R')}
+                {Square(0, 0), Piece('R')},  // a8
+                {Square(4, 0), Piece('K')},  // e8
+                {Square(7, 0), Piece('R')},  // h8
+                {Square(0, 7), Piece('r')},  // a1
+                {Square(4, 7), Piece('k')},  // e1
+                {Square(7, 7), Piece('r')}   // h1
             },
             Piece::Color::WHITE,
             true, true, true, true,
