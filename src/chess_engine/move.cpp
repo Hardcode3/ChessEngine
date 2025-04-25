@@ -34,23 +34,29 @@ const std::optional<GameState>& Move::get_previous_state() const noexcept { retu
 Piece Move::get_promoted_to() const noexcept { return is_promotion() ? promotion->promoted_to : Piece(); }
 
 // Setters with validation
-void Move::set_captured(Piece c) noexcept {
+Move& Move::set_captured(Piece c) noexcept {
   captured = c;  // Allow setting any piece, including empty ones
+  return *this;
 }
 
-void Move::set_castling(Square rook_from, Square rook_to) noexcept {
+Move& Move::set_castling(Square rook_from, Square rook_to) noexcept {
   if (rook_from != rook_to) {  // Validate rook movement
     castling = CastlingInfo(rook_from, rook_to);
   }
+  return *this;
 }
 
-void Move::set_promotion(Piece promoted_to) noexcept {
+Move& Move::set_promotion(Piece promoted_to) noexcept {
   if (promoted_to.is_valid()) {  // Only set if valid
     promotion = PromotionInfo(promoted_to);
   }
+  return *this;
 }
 
-void Move::set_previous_state(GameState state) { previous_state = std::move(state); }
+Move& Move::set_previous_state(GameState state) {
+  previous_state = std::move(state);
+  return *this;
+}
 
 // Queries
 bool Move::is_capture() const noexcept { return captured.has_value(); }

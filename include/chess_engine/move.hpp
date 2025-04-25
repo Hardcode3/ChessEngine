@@ -40,10 +40,10 @@ class Move {
   Piece get_promoted_to() const noexcept;
 
   // Setters with validation
-  void set_captured(Piece c) noexcept;
-  void set_castling(Square rook_from, Square rook_to) noexcept;
-  void set_promotion(Piece promoted_to) noexcept;
-  void set_previous_state(GameState state);
+  Move& set_captured(Piece c) noexcept;
+  Move& set_castling(Square rook_from, Square rook_to) noexcept;
+  Move& set_promotion(Piece promoted_to) noexcept;
+  Move& set_previous_state(GameState state);
 
   // Queries
   bool is_capture() const noexcept;
