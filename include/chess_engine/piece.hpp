@@ -20,6 +20,10 @@ class Piece {
 
   char to_char() const;
   bool is_valid() const noexcept { return type != Type::EMPTY && color != Color::NO_COLOR; }
+  bool is_empty() const noexcept { return type == Type::EMPTY; }
+  bool is_populated() const noexcept { return !is_empty(); }
+  bool has_color() const noexcept { return color == Color::NO_COLOR; }
+  bool is_opponent(const Piece& other) const noexcept;
 
   bool operator==(const Piece& other) const noexcept;
   bool operator!=(const Piece& other) const noexcept;

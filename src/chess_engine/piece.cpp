@@ -74,6 +74,13 @@ char Piece::to_char() const {
   return type_char;
 }
 
+bool Piece::is_opponent(const Piece& other) const noexcept {
+  if (!(this->has_color() and other.has_color())) {
+    return false;
+  }
+  return this->color != other.color;
+}
+
 bool Piece::operator==(const Piece& other) const noexcept { return type == other.type && color == other.color; }
 
 bool Piece::operator!=(const Piece& other) const noexcept { return !(*this == other); }
