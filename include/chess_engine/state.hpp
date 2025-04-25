@@ -1,8 +1,8 @@
 #pragma once
 
-#include <optional>
 #include <chess_engine/piece.hpp>
 #include <chess_engine/square.hpp>
+#include <optional>
 
 namespace chess {
 

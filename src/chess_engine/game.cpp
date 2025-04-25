@@ -61,11 +61,11 @@ void Game::from_fen(const std::string& fen) {
 std::string Game::get_fen() const {
   std::string fen;
 
-  for (int r = 7; r >= 0; r--){
-    for (uint8_t f = 0; f < BOARD_SIZE; f++){
+  for (int r = 7; r >= 0; r--) {
+    for (uint8_t f = 0; f < BOARD_SIZE; f++) {
       const Piece p = board.get_piece(f, static_cast<uint8_t>(r));
-      if (p.type == Piece::Type::EMPTY){
-        if (fen.size() > 0 && isdigit(fen.back())){
+      if (p.type == Piece::Type::EMPTY) {
+        if (fen.size() > 0 && isdigit(fen.back())) {
           fen.back() = static_cast<int>(fen.back()) + 1;
         } else {
           fen += '1';
@@ -74,7 +74,7 @@ std::string Game::get_fen() const {
         fen += p.to_char();
       }
     }
-    if (r != 0){
+    if (r != 0) {
       fen += '/';
     }
   }
@@ -84,11 +84,21 @@ std::string Game::get_fen() const {
 
   // Castling rights
   fen += ' ';
-  if (this->state.white_can_castle_kingside) { fen += 'K'; }
-  if (this->state.white_can_castle_queenside) { fen += 'Q'; }
-  if (this->state.black_can_castle_kingside) { fen += 'k'; }
-  if (this->state.black_can_castle_queenside) { fen += 'q'; }
-  if (fen.back() == ' ') { fen += '-'; }
+  if (this->state.white_can_castle_kingside) {
+    fen += 'K';
+  }
+  if (this->state.white_can_castle_queenside) {
+    fen += 'Q';
+  }
+  if (this->state.black_can_castle_kingside) {
+    fen += 'k';
+  }
+  if (this->state.black_can_castle_queenside) {
+    fen += 'q';
+  }
+  if (fen.back() == ' ') {
+    fen += '-';
+  }
 
   // En passant
   fen += ' ';
@@ -100,6 +110,59 @@ std::string Game::get_fen() const {
   fen += std::to_string(this->state.fullmove_number);
 
   return fen;
+}
+
+std::vector<Move> Game::generate_legal_moves() const {
+  std::vector<Move> legal_moves;
+  const Piece::Color side_to_move = state.side_to_move;
+
+  for (uint8_t rank = 0; rank < BOARD_SIZE; ++rank) {
+    for (uint8_t file = 0; file < BOARD_SIZE; ++file) {
+      Square square(file, rank);
+      const Piece piece = board.get_piece(square);
+
+      // Skip empty squares and pieces of the wrong color
+      if (piece.type == Piece::Type::EMPTY || piece.color != side_to_move) {
+        continue;
+      }
+
+      // Generate moves based on piece type
+      switch (piece.type) {
+        case Piece::Type::PAWN:
+          generate_pawn_moves(legal_moves, square);
+          break;
+        case Piece::Type::KNIGHT:
+          // generate_knight_moves(legal_moves, square);
+          break;
+        case Piece::Type::BISHOP:
+          // generate_bishop_moves(legal_moves, square);
+          break;
+        case Piece::Type::ROOK:
+          // generate_rook_moves(legal_moves, square);
+          break;
+        case Piece::Type::QUEEN:
+          // generate_queen_moves(legal_moves, square);
+          break;
+        case Piece::Type::KING:
+          // generate_king_moves(legal_moves, square);
+          break;
+        case Piece::Type::EMPTY:
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  // Filter out moves that would leave the king in check
+  std::vector<Move> filtered_moves;
+  for (const auto& move : legal_moves) {
+    if (is_move_legal(move)) {
+      filtered_moves.push_back(move);
+    }
+  }
+
+  return filtered_moves;
 }
 
 }  // namespace chess

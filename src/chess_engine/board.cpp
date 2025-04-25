@@ -46,18 +46,18 @@ std::vector<Square> Board::get_pieces(Piece::Color color) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Board& board) {
-    os << "  +--------------------------+" << '\n';
-    for(int rank = 7; rank >= 0; --rank) {
-        os << rank + 1 << " |  ";
-        for(int file = 0; file < BOARD_SIZE; ++file) {
-            char piece_char = board.get_piece(Square(file, rank)).to_char();
-            os << piece_char << "  ";
-        }
-        os << '|' << '\n';
+  os << "  +--------------------------+" << '\n';
+  for (int rank = 7; rank >= 0; --rank) {
+    os << rank + 1 << " |  ";
+    for (int file = 0; file < BOARD_SIZE; ++file) {
+      char piece_char = board.get_piece(Square(file, rank)).to_char();
+      os << piece_char << "  ";
     }
-    os << "  +--------------------------+" << '\n';
-    os << "     a  b  c  d  e  f  g  h" << '\n';
-    return os;
+    os << '|' << '\n';
+  }
+  os << "  +--------------------------+" << '\n';
+  os << "     a  b  c  d  e  f  g  h" << '\n';
+  return os;
 }
 
 }  // namespace chess
