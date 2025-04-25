@@ -1,10 +1,13 @@
 #include <chess_engine/square.hpp>
 #include <format>
+#include <type_traits>
 
 namespace chess {
 
-Square::Square(uint8_t file, uint8_t rank) : file(file), rank(rank) {
-  if (file > 7 || rank > 7) {
+const std::string Square::ND = "ND";
+
+Square::Square(uint8_t file, uint8_t rank, ThrowMode throw_mode) : file(file), rank(rank) {
+  if (throw_mode == ThrowMode::THROW && !Square::is_valid(file, rank)) {
     throw std::invalid_argument(std::format("Square out of bounds, invalid file {}, rank {}", file, rank));
   }
 }
@@ -16,19 +19,28 @@ Square::Square(const std::string &notation) {
   // chars are ASCII, so e - a = 101 - 97 = 4
   file = notation[0] - 'a';
   rank = notation[1] - '1';
-  if (file > 7 || rank > 7) {
+  if (is_valid()) {
     throw std::invalid_argument(
         std::format("Square out of bounds, invalid notation {} would be file {}, rank {}", notation, file, rank));
   }
 }
 
-std::string Square::to_string() const {
-  if (file > 7 || rank > 7) {
-    throw std::invalid_argument(
-        std::format("Invalid position for file {}, rank {} cannot be converted to notation", file, rank));
+std::string Square::to_string() const noexcept {
+  if (!is_valid()) {
+    return Square::ND;
   }
   return std::string(1, 'a' + file) + std::to_string(rank + 1);
 }
+
+bool Square::is_valid(const uint8_t &file, const uint8_t &rank) {
+  return (file >= 0 && file < 7 && rank >= 0 && rank < 7);
+}
+
+bool Square::is_valid() const noexcept { return (is_file_valid() && is_rank_valid()); }
+
+bool Square::is_file_valid() const noexcept { return (file >= 0 && file < 7); }
+
+bool Square::is_rank_valid() const noexcept { return (rank >= 0 && rank < 7); }
 
 bool Square::operator==(const Square &other) const { return this->file == other.file && this->rank == other.rank; }
 
