@@ -1,8 +1,19 @@
 #include <gtest/gtest.h>
+#include <limits>
 #include <chess_engine/square.hpp>
 
 using namespace chess;
 
+TEST(SquareTest, DefaultConstructor) {
+    Square square;
+
+    EXPECT_EQ(square.file, std::numeric_limits<uint8_t>::max());
+    EXPECT_EQ(square.rank, std::numeric_limits<uint8_t>::max());
+    EXPECT_FALSE(square.is_valid());
+    EXPECT_FALSE(square.is_file_valid());
+    EXPECT_FALSE(square.is_rank_valid());
+    EXPECT_EQ(square.to_string(), Square::ND);
+}
 
 TEST(SquareTest, ConstructorFromFileRankValid) {
     const std::string files = "abcdefgh";
@@ -31,7 +42,7 @@ TEST(SquareTest, ConstructorFromFileRankValid) {
     }
 }
 
-TEST(SquareTest, ConstructorFromFileRankInvalid) {
+TEST(SquareTest, ConstructorFromFileRankInvalidThow) {
     struct TestCase {
         uint8_t file;
         uint8_t rank;
@@ -46,12 +57,35 @@ TEST(SquareTest, ConstructorFromFileRankInvalid) {
 
     for (const auto& test_case : test_cases) {
         auto create_invalid_square = [&test_case]() {
-            Square s(test_case.file, test_case.rank);
+            Square s(test_case.file, test_case.rank, ThrowMode::THROW);
         };
         EXPECT_THROW(create_invalid_square(), std::invalid_argument)
             << "Failed for case: " << test_case.description
             << " (file=" << static_cast<int>(test_case.file)
             << ", rank=" << static_cast<int>(test_case.rank) << ")";
+    }
+}
+
+TEST(SquareTest, ConstructorFromFileRankInvalidNoThow) {
+    struct TestCase {
+        uint8_t file;
+        uint8_t rank;
+        std::string description;
+    };
+
+    const std::vector<TestCase> test_cases = {
+        {8, 0, "file out of bounds"},
+        {5, 8, "rank out of bounds"},
+        {17, 8, "both file and rank out of bounds"}
+    };
+
+    for (const auto& test_case : test_cases) {
+        Square s(test_case.file, test_case.rank, ThrowMode::NO_THROW);
+
+        EXPECT_EQ(s.file, test_case.file);
+        EXPECT_EQ(s.rank, test_case.rank);
+        EXPECT_FALSE(s.is_valid());
+        EXPECT_EQ(s.to_string(), Square::ND);
     }
 }
 

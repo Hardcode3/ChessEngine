@@ -74,11 +74,37 @@ char Piece::to_char() const {
   return type_char;
 }
 
-bool Piece::is_opponent(const Piece& other) const noexcept {
-  if (!(this->has_color() and other.has_color())) {
-    return false;
+int8_t Piece::get_direction() const noexcept {
+  if (!is_valid()) {
+    return std::numeric_limits<int8_t>::max();
   }
-  return this->color != other.color;
+  return (color == Color::WHITE) ? 1 : -1;
+}
+
+uint8_t Piece::get_starting_rank() const noexcept {
+  if (!is_valid()) {
+    return std::numeric_limits<uint8_t>::max();
+  }
+
+  if (type == Type::PAWN) {
+    return (color == Color::WHITE) ? 1 : 6;
+  } else {
+    return (color == Color::WHITE) ? 0 : 7;
+  }
+}
+
+uint8_t Piece::get_promotion_rank() const noexcept {
+  if (!is_valid()) {
+    return std::numeric_limits<uint8_t>::max();
+  }
+  return (color == Color::WHITE) ? 7 : 0;
+}
+
+bool Piece::is_opponent(const Piece& other) const noexcept {
+  if (this->has_color() and other.has_color()) {
+    return this->color != other.color;
+  }
+  return false;
 }
 
 bool Piece::operator==(const Piece& other) const noexcept { return type == other.type && color == other.color; }

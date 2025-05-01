@@ -1,5 +1,7 @@
 #include <chess_engine/move.hpp>
 #include <format>
+#include <iostream>
+
 
 namespace chess {
 
@@ -86,6 +88,11 @@ std::string Move::to_uci() const {
     result += promotion->promoted_to.to_char();
   }
   return result;
+}
+
+std::ostream& operator<<(std::ostream& os, const Move& move) {
+  os << move.to_uci() << '\n';
+  return os;
 }
 
 }  // namespace chess

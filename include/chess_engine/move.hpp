@@ -60,6 +60,8 @@ class Move {
 
   std::string to_uci() const;
 
+  friend std::ostream& operator<<(std::ostream& os, const Move& move);
+
  private:
   Square from;
   Square to;

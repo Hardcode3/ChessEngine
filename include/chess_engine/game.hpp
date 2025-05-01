@@ -38,11 +38,6 @@ class Game {
   bool is_square_attacked(Square square, Piece::Color attacker) const;
   Square get_king_square(Piece::Color color) const;
 
- private:
-  Board board;
-  GameState state;
-  std::vector<Move> move_history;
-
   // Move generation helpers
   void generate_pawn_moves(std::vector<Move>& moves, Square square) const;
   void generate_knight_moves(std::vector<Move>& moves, Square square) const;
@@ -50,6 +45,13 @@ class Game {
   void generate_rook_moves(std::vector<Move>& moves, Square square) const;
   void generate_queen_moves(std::vector<Move>& moves, Square square) const;
   void generate_king_moves(std::vector<Move>& moves, Square square) const;
+
+  void print_board() const noexcept;
+
+ private:
+  Board board;
+  GameState state;
+  std::vector<Move> move_history;
 
   // Move validation helpers
   bool is_square_safe(Square square, Piece::Color color) const;

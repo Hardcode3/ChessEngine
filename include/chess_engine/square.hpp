@@ -8,9 +8,10 @@ namespace chess {
 struct Square {
   uint8_t file;  // 0-7 (a-h)
   uint8_t rank;  // 0-7 (1-8)
+
   static const std::string ND;
 
-  explicit Square() = delete;
+  explicit Square();
   explicit Square(uint8_t file, uint8_t rank, ThrowMode throw_mode = ThrowMode::NO_THROW);
   explicit Square(const std::string &notation);  // e.g., "e4"
 

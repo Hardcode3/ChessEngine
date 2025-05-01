@@ -1,5 +1,7 @@
 #include <chess_engine/game.hpp>
 #include <sstream>
+#include <iostream>
+
 
 namespace chess {
 
@@ -154,15 +156,20 @@ std::vector<Move> Game::generate_legal_moves() const {
     }
   }
 
+  return legal_moves;
   // Filter out moves that would leave the king in check
-  std::vector<Move> filtered_moves;
-  for (const auto& move : legal_moves) {
-    if (is_move_legal(move)) {
-      filtered_moves.push_back(move);
-    }
-  }
+  // std::vector<Move> filtered_moves;
+  // for (const auto& move : legal_moves) {
+  //   if (is_move_legal(move)) {
+  //     filtered_moves.push_back(move);
+  //   }
+  // }
 
-  return filtered_moves;
+  // return filtered_moves;
+}
+
+void Game::print_board() const noexcept {
+  std::cout << board << "\n";
 }
 
 }  // namespace chess
