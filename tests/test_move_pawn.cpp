@@ -8,6 +8,20 @@
 
 using namespace chess;
 
+TEST_F(MoveTest, ThrowsIfNoPieceAtSquare) {
+  game.from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
+  const Square empty_square(4, 4);  // e5
+
+  EXPECT_THROW(game.generate_pawn_moves(moves, empty_square), std::runtime_error);
+}
+
+TEST_F(MoveTest, ThrowsIfNotAKnight) {
+  game.from_fen("8/8/8/3N4/8/8/8/8 w - - 0 1");
+  const Square knight_square(3, 4);  // d5
+
+  EXPECT_THROW(game.generate_pawn_moves(moves, knight_square), std::runtime_error);
+}
+
 TEST_F(MoveTest, WhitePawnStartingPosition) {
   // Set up a white pawn at its starting position
   game.from_fen("8/8/8/8/8/8/P7/8 w - - 0 1");

@@ -6,7 +6,7 @@ namespace chess {
 
 void Game::generate_pawn_moves(std::vector<Move>& moves, Square square) const {
   const Piece pawn = this->board.get_piece(square);
-  if (!pawn.is_valid()) {
+  if (!pawn.is_valid() or !pawn.is_pawn()) {
     throw std::runtime_error(std::format("Missing piece at square {}, expected a pawn", square.to_string()));
   }
 

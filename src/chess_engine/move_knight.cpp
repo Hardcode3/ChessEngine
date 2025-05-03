@@ -5,7 +5,7 @@
 namespace chess {
 void Game::generate_knight_moves(std::vector<Move>& moves, Square square) const {
   const Piece knight = this->get_piece(square);
-  if (!knight.is_valid()) {
+  if (!knight.is_valid() or !knight.is_knight()) {
     throw std::runtime_error(std::format("Missing piece at square {}, expected a knight", square.to_string()));
   }
 

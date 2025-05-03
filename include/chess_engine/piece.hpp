@@ -27,6 +27,9 @@ class Piece {
   uint8_t get_starting_rank() const noexcept;
   uint8_t get_promotion_rank() const noexcept;
 
+  bool is_pawn() const noexcept { return type == Type::PAWN; }
+  bool is_knight() const noexcept { return type == Type::KNIGHT; }
+
   bool is_opponent(const Piece& other) const noexcept;
 
   bool operator==(const Piece& other) const noexcept;
