@@ -134,7 +134,7 @@ std::vector<Move> Game::generate_legal_moves() const {
           generate_pawn_moves(legal_moves, square);
           break;
         case Piece::Type::KNIGHT:
-          // generate_knight_moves(legal_moves, square);
+          generate_knight_moves(legal_moves, square);
           break;
         case Piece::Type::BISHOP:
           // generate_bishop_moves(legal_moves, square);
