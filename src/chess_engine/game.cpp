@@ -1,7 +1,6 @@
 #include <chess_engine/game.hpp>
-#include <sstream>
 #include <iostream>
-
+#include <sstream>
 
 namespace chess {
 
@@ -168,8 +167,6 @@ std::vector<Move> Game::generate_legal_moves() const {
   // return filtered_moves;
 }
 
-void Game::print_board() const noexcept {
-  std::cout << board << "\n";
-}
+void Game::print_board() const noexcept { std::cout << board << "\n"; }
 
 }  // namespace chess

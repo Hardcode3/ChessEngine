@@ -73,7 +73,7 @@ void Game::generate_pawn_moves(std::vector<Move>& moves, Square square) const {
       // En passant capture
       const bool en_passant_is_possible = this->state.en_passant_square.has_value();
       const bool target_is_en_passant = diagonal_square == this->state.en_passant_square.value_or(Square());
-      if ( en_passant_is_possible && target_is_en_passant) {
+      if (en_passant_is_possible && target_is_en_passant) {
         const Square en_passant_target_square(square.file + file_offset, square.rank);
         const Piece en_passant_target = board.get_piece(en_passant_target_square);
         moves.push_back(Move(square, diagonal_square, pawn).set_captured(en_passant_target));

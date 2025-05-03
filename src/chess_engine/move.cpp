@@ -2,7 +2,6 @@
 #include <format>
 #include <iostream>
 
-
 namespace chess {
 
 CastlingInfo::CastlingInfo(Square from, Square to) : rook_from(from), rook_to(to) {
