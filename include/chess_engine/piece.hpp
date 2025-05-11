@@ -29,6 +29,7 @@ class Piece {
 
   bool is_pawn() const noexcept { return type == Type::PAWN; }
   bool is_knight() const noexcept { return type == Type::KNIGHT; }
+  bool is_rook() const noexcept { return type == Type::ROOK; }
 
   bool is_opponent(const Piece& other) const noexcept;
 

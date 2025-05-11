@@ -139,7 +139,7 @@ std::vector<Move> Game::generate_legal_moves() const {
           // generate_bishop_moves(legal_moves, square);
           break;
         case Piece::Type::ROOK:
-          // generate_rook_moves(legal_moves, square);
+          generate_rook_moves(legal_moves, square);
           break;
         case Piece::Type::QUEEN:
           // generate_queen_moves(legal_moves, square);
