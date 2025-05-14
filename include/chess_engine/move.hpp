@@ -1,57 +1,75 @@
 #pragma once
 
-#include <array>
-#include <cstdint>
-#include <string>
-#include <vector>
-
 #include <chess_engine/piece.hpp>
 #include <chess_engine/square.hpp>
+#include <chess_engine/state.hpp>
+#include <optional>
+#include <string>
 
-namespace chess
-{
+namespace chess {
 
-struct Move
-{
-  Square from;
-  Square to;
-  Piece  piece;
-  Piece  captured;
-  bool   is_promotion;
-  Piece  promotion_piece;
-  bool   is_castling;
-  Square castling_rook_from;
-  Square castling_rook_to;
+struct GameState;
 
-  // State before the move
-  bool   white_castle_kingside;
-  bool   white_castle_queenside;
-  bool   black_castle_kingside;
-  bool   black_castle_queenside;
-  Square previous_en_passant;
-  int    previous_halfmove_clock;
+struct CastlingInfo {
+  Square rook_from;
+  Square rook_to;
 
-  Move ( Square f, Square t, Piece p )
-      : from ( f ), to ( t ), piece ( p ), captured ( Piece::EMPTY ), is_promotion ( false ),
-        promotion_piece ( Piece::EMPTY ), is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ),
-        previous_en_passant ( 0, 0 )
-  {
-  }
-
-  Move ( Square f, Square t, Piece p, Piece c )
-      : from ( f ), to ( t ), piece ( p ), captured ( c ), is_promotion ( false ), promotion_piece ( Piece::EMPTY ),
-        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ), previous_en_passant ( 0, 0 )
-  {
-  }
-
-  Move ( Square f, Square t, Piece p, Piece c, bool prom, Piece prom_piece )
-      : from ( f ), to ( t ), piece ( p ), captured ( c ), is_promotion ( prom ), promotion_piece ( prom_piece ),
-        is_castling ( false ), castling_rook_from ( 0, 0 ), castling_rook_to ( 0, 0 ), previous_en_passant ( 0, 0 )
-  {
-  }
-
-  std::string
-  to_uci () const;
+  CastlingInfo(Square from, Square to);
 };
 
-} // namespace chess
+struct PromotionInfo {
+  Piece promoted_to;
+
+  PromotionInfo(Piece piece);
+};
+
+class Move {
+ public:
+  Move(Square from, Square to, Piece piece);
+
+  // Getters
+  Square get_from() const noexcept;
+  Square get_to() const noexcept;
+  Piece get_piece() const noexcept;
+  const std::optional<Piece>& get_captured() const noexcept;
+  const std::optional<CastlingInfo>& get_castling() const noexcept;
+  const std::optional<PromotionInfo>& get_promotion() const noexcept;
+  const std::optional<GameState>& get_previous_state() const noexcept;
+
+  // Convenience getters
+  Piece get_promoted_to() const noexcept;
+
+  // Setters with validation
+  Move& set_captured(Piece c) noexcept;
+  Move& set_castling(Square rook_from, Square rook_to) noexcept;
+  Move& set_promotion(Piece promoted_to) noexcept;
+  Move& set_previous_state(GameState state);
+
+  // Queries
+  bool is_capture() const noexcept;
+  bool is_promotion() const noexcept;
+  bool is_castling() const noexcept;
+  bool is_quiet() const noexcept;
+
+  // Additional descriptive queries
+  bool is_pawn_move() const noexcept;
+  bool is_pawn_double_push() const noexcept;
+  bool is_en_passant() const noexcept;
+  bool is_king_side_castle() const noexcept;
+  bool is_queen_side_castle() const noexcept;
+
+  std::string to_uci() const;
+
+  friend std::ostream& operator<<(std::ostream& os, const Move& move);
+
+ private:
+  Square from;
+  Square to;
+  Piece piece;
+  std::optional<Piece> captured;
+  std::optional<CastlingInfo> castling;
+  std::optional<PromotionInfo> promotion;
+  std::optional<GameState> previous_state;
+};
+
+}  // namespace chess
