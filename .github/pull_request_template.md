@@ -1,4 +1,4 @@
-# Title
+# 📌 Title
 
 ## 🧩 Type of Change
 
@@ -13,6 +13,7 @@ Select the type of change your pull request introduces by **removing** unnecessa
 - 🔧 Build or CI/CD configuration
 - 🧹 Code cleanup
 - ⚠️ Breaking change
+- 🧱 Chore
 
 ## 📊 Severity
 
@@ -22,6 +23,15 @@ Indicate the potential impact of this change:
 - 🟡 **Medium**: Changes may affect functionality, but are localized and tested
 - 🟠 **High**: Major impact on core functionality, requires careful review
 - 🔴 **Critical**: Breaking change or affects many areas of the system
+
+## 🔖 Release
+
+Select the type of release this PR corresponds to:
+
+- 🩹 Patch — Backward-compatible bug fix
+- 🧪 Minor — Backward-compatible feature
+- 💥 Major — Breaking change
+- 🚫 None — Does not affect the public API or functionality
 
 ## 📄 Description
 
