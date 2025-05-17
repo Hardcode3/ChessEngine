@@ -32,6 +32,7 @@ class Piece {
   bool is_rook() const noexcept { return type == Type::ROOK; }
   bool is_bishop() const noexcept { return type == Type::BISHOP; }
   bool is_queen() const noexcept { return type == Type::QUEEN; }
+  bool is_king() const noexcept { return type == Type::KING; }
 
   bool is_opponent(const Piece& other) const noexcept;
 
