@@ -1,209 +1,222 @@
 #include <gtest/gtest.h>
 #include <chess_engine/board.hpp>
-#include <chess_engine/move.hpp>
 #include <chess_engine/piece.hpp>
 #include <chess_engine/square.hpp>
 
+#include <iostream>
+
 using namespace chess;
 
-TEST(BoardTest, DefaultConstructor) {
+class BoardTest : public ::testing::Test {
+protected:
     Board board;
+    void SetUp() override {
+        board.clear();
+    }
+};
 
-    // Test that all squares are empty
+struct PieceTestCase {
+    Square square;
+    Piece piece;
+    bool should_succeed;
+    std::string test_name;
+};
+
+
+TEST_F(BoardTest, InitializationProvidesEmptyBoard) {
+    // Test that board is properly initialized with empty pieces
     for (int rank = 0; rank < 8; ++rank) {
         for (int file = 0; file < 8; ++file) {
-            EXPECT_EQ(board.get_piece(Square(file, rank)), Piece::EMPTY);
+            Square square(file, rank);
+            EXPECT_TRUE(board.is_empty(square)) << "Square " << file << ", " << rank << " should be empty but is not";
         }
     }
-
-    // Test initial game state
-    EXPECT_EQ(board.get_side_to_move(), Color::WHITE);
 }
 
-TEST(BoardTest, LoadFENStartingPositionWhitePieces) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+TEST_F(BoardTest, SetPiecesAndClearBoard) {
+    // Set some pieces
+    board.set_piece(Square(0, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE));
+    board.set_piece(Square(7, 7), Piece(Piece::Type::KING, Piece::Color::BLACK));
 
-    // Test white back rank pieces
-    EXPECT_EQ(board.get_piece(Square(0, 0)), Piece::ROOK);
-    EXPECT_EQ(board.get_color(Square(0, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(1, 0)), Piece::KNIGHT);
-    EXPECT_EQ(board.get_color(Square(1, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(2, 0)), Piece::BISHOP);
-    EXPECT_EQ(board.get_color(Square(2, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(3, 0)), Piece::QUEEN);
-    EXPECT_EQ(board.get_color(Square(3, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(4, 0)), Piece::KING);
-    EXPECT_EQ(board.get_color(Square(4, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(5, 0)), Piece::BISHOP);
-    EXPECT_EQ(board.get_color(Square(5, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(6, 0)), Piece::KNIGHT);
-    EXPECT_EQ(board.get_color(Square(6, 0)), Color::WHITE);
-    EXPECT_EQ(board.get_piece(Square(7, 0)), Piece::ROOK);
-    EXPECT_EQ(board.get_color(Square(7, 0)), Color::WHITE);
-}
+    // Clear the board
+    board.clear();
 
-TEST(BoardTest, LoadFENStartingPositionBlackPieces) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-
-    // Test black back rank pieces
-    EXPECT_EQ(board.get_piece(Square(0, 7)), Piece::ROOK);
-    EXPECT_EQ(board.get_color(Square(0, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(1, 7)), Piece::KNIGHT);
-    EXPECT_EQ(board.get_color(Square(1, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(2, 7)), Piece::BISHOP);
-    EXPECT_EQ(board.get_color(Square(2, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(3, 7)), Piece::QUEEN);
-    EXPECT_EQ(board.get_color(Square(3, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(4, 7)), Piece::KING);
-    EXPECT_EQ(board.get_color(Square(4, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(5, 7)), Piece::BISHOP);
-    EXPECT_EQ(board.get_color(Square(5, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(6, 7)), Piece::KNIGHT);
-    EXPECT_EQ(board.get_color(Square(6, 7)), Color::BLACK);
-    EXPECT_EQ(board.get_piece(Square(7, 7)), Piece::ROOK);
-    EXPECT_EQ(board.get_color(Square(7, 7)), Color::BLACK);
-}
-
-TEST(BoardTest, LoadFENStartingPositionEmptySquares) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-
-    // Test empty squares
-    for (int rank = 2; rank < 6; ++rank) {
+    // Verify all squares are empty
+    for (int rank = 0; rank < 8; ++rank) {
         for (int file = 0; file < 8; ++file) {
-            EXPECT_EQ(board.get_piece(Square(file, rank)), Piece::EMPTY);
+            EXPECT_TRUE(board.is_empty(Square(file, rank)));
         }
     }
-
-    // Test initial game state
-    EXPECT_EQ(board.get_side_to_move(), Color::WHITE);
 }
 
-TEST(BoardTest, GenerateLegalMovesFromStartingPosition) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+TEST_F(BoardTest, SetAndGetPiecesByColor) {
+    // Set up some pieces
+    board.set_piece(Square(0, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE));
+    board.set_piece(Square(1, 0), Piece(Piece::Type::KNIGHT, Piece::Color::WHITE));
+    board.set_piece(Square(0, 7), Piece(Piece::Type::PAWN, Piece::Color::BLACK));
 
-    auto moves = board.generate_legal_moves();
+    // Get all white pieces
+    auto white_pieces = board.get_pieces(Piece::Color::WHITE);
+    EXPECT_EQ(white_pieces.size(), 2);
 
-    // Starting position should have 20 legal moves
-    EXPECT_EQ(moves.size(), 20);
+    // Get all black pieces
+    auto black_pieces = board.get_pieces(Piece::Color::BLACK);
+    EXPECT_EQ(black_pieces.size(), 1);
+}
 
-    // Test a given move
-    bool found_e2e4 = false;
-    for (const auto& move : moves) {
-        if (move.to_uci() == "e2e4") {
-            found_e2e4 = true;
-            break;
-        }
+TEST_F(BoardTest, SetAndGetPiecesByTypeAndColor) {
+    std::vector<PieceTestCase> test_cases = {
+        {Square(0, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE), true, "White pawn at a1"},
+        {Square(7, 7), Piece(Piece::Type::KING, Piece::Color::BLACK), true, "Black king at h8"},
+        {Square(4, 4), Piece(Piece::Type::QUEEN, Piece::Color::WHITE), true, "White queen at e5"},
+        {Square(1, 6), Piece(Piece::Type::KNIGHT, Piece::Color::BLACK), true, "Black knight at b7"},
+        {Square(3, 2), Piece(Piece::Type::BISHOP, Piece::Color::WHITE), true, "White bishop at d3"},
+        {Square(5, 1), Piece(Piece::Type::ROOK, Piece::Color::BLACK), true, "Black rook at f2"}
+    };
+
+    for (const auto& test_case : test_cases) {
+        board.set_piece(test_case.square, test_case.piece);
+
+        EXPECT_FALSE(board.is_empty(test_case.square))
+            << "Test failed for " << test_case.test_name;
+        EXPECT_EQ(board.get_piece(test_case.square).type, test_case.piece.type)
+            << "Type mismatch for " << test_case.test_name;
+        EXPECT_EQ(board.get_piece(test_case.square).color, test_case.piece.color)
+            << "Color mismatch for " << test_case.test_name;
     }
-    EXPECT_TRUE(found_e2e4);
 }
 
-TEST(BoardTest, MakeMoveFromStartingPosition) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+TEST_F(BoardTest, SetGetOnEdgeCases) {
+    std::vector<PieceTestCase> edge_cases = {
+        {Square(0, 0), Piece(Piece::Type::KING, Piece::Color::WHITE), true, "White king at a1"},
+        {Square(7, 0), Piece(Piece::Type::ROOK, Piece::Color::BLACK), true, "Black rook at h1"},
+        {Square(0, 7), Piece(Piece::Type::BISHOP, Piece::Color::WHITE), true, "White bishop at a8"},
+        {Square(7, 7), Piece(Piece::Type::KNIGHT, Piece::Color::BLACK), true, "Black knight at h8"}
+    };
 
-    // Make e2e4
-    const Square from(4, 1);
-    const Square to(4, 3);
+    for (const auto& test_case : edge_cases) {
+        board.set_piece(test_case.square, test_case.piece);
 
-    Move move(from, to, Piece::PAWN);
-    board.make_move(move);
-
-    // Test piece moved
-    EXPECT_EQ(board.get_piece(from), Piece::EMPTY);
-    EXPECT_EQ(board.get_piece(to), Piece::PAWN);
-
-    // Test side to move changed
-    EXPECT_EQ(board.get_side_to_move(), Color::BLACK);
+        EXPECT_FALSE(board.is_empty(test_case.square))
+            << "Test failed for " << test_case.test_name;
+        EXPECT_EQ(board.get_piece(test_case.square).type, test_case.piece.type)
+            << "Type mismatch for " << test_case.test_name;
+        EXPECT_EQ(board.get_piece(test_case.square).color, test_case.piece.color)
+            << "Color mismatch for " << test_case.test_name;
+    }
 }
 
-TEST(BoardTest, EvaluatePositionIsNull) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+TEST_F(BoardTest, SetOverridesPieces) {
+    // First place a white pawn
+    Square square(3, 3);
+    Piece white_pawn(Piece::Type::PAWN, Piece::Color::WHITE);
+    board.set_piece(square, white_pawn);
 
-    // Starting position should be equal
-    EXPECT_EQ(board.evaluate(), 0);
+    // Verify initial placement
+    EXPECT_EQ(board.get_piece(square).type, Piece::Type::PAWN);
+    EXPECT_EQ(board.get_piece(square).color, Piece::Color::WHITE);
+
+    // Overwrite with black queen
+    Piece black_queen(Piece::Type::QUEEN, Piece::Color::BLACK);
+    board.set_piece(square, black_queen);
+
+    // Verify overwrite
+    EXPECT_EQ(board.get_piece(square).type, Piece::Type::QUEEN);
+    EXPECT_EQ(board.get_piece(square).color, Piece::Color::BLACK);
 }
 
-TEST(BoardTest, EvaluatePositionAdvantageToWhite) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
+TEST_F(BoardTest, GetPieceBySquare) {
+    // Set up pieces in asymmetric patterns
+    std::vector<std::pair<Square, Piece>> piece_placements = {
+        // Corners and edges
+        {Square(0, 0), Piece(Piece::Type::ROOK, Piece::Color::WHITE)},
+        {Square(7, 0), Piece(Piece::Type::ROOK, Piece::Color::WHITE)},
+        {Square(0, 7), Piece(Piece::Type::ROOK, Piece::Color::BLACK)},
+        {Square(7, 7), Piece(Piece::Type::ROOK, Piece::Color::BLACK)},
 
-    Move capture(Square(0, 1), Square(0, 6), Piece::PAWN, Piece::PAWN);
-    board.make_move(capture);
+        // Center and off-center positions
+        {Square(3, 4), Piece(Piece::Type::QUEEN, Piece::Color::WHITE)},
+        {Square(4, 3), Piece(Piece::Type::QUEEN, Piece::Color::BLACK)},
 
-    // White should have a material advantage
-    EXPECT_GT(board.evaluate(), 0);
+        // Random asymmetric positions
+        {Square(2, 5), Piece(Piece::Type::KNIGHT, Piece::Color::WHITE)},
+        {Square(5, 2), Piece(Piece::Type::KNIGHT, Piece::Color::BLACK)},
+        {Square(1, 6), Piece(Piece::Type::BISHOP, Piece::Color::WHITE)},
+        {Square(6, 1), Piece(Piece::Type::BISHOP, Piece::Color::BLACK)},
+
+        // Edge positions (not corners)
+        {Square(0, 3), Piece(Piece::Type::PAWN, Piece::Color::WHITE)},
+        {Square(3, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE)},
+        {Square(7, 4), Piece(Piece::Type::PAWN, Piece::Color::BLACK)},
+        {Square(4, 7), Piece(Piece::Type::PAWN, Piece::Color::BLACK)}
+    };
+
+    // Place all pieces
+    for (const auto& [square, piece] : piece_placements) {
+        board.set_piece(square, piece);
+    }
+
+    // Test getting each piece
+    for (const auto& [square, expected_piece] : piece_placements) {
+        Piece retrieved_piece = board.get_piece(square);
+        EXPECT_EQ(retrieved_piece.type, expected_piece.type)
+            << "Type mismatch at square (" << square.file << ", " << square.rank << ")";
+        EXPECT_EQ(retrieved_piece.color, expected_piece.color)
+            << "Color mismatch at square (" << square.file << ", " << square.rank << ")";
+    }
 }
 
-TEST(BoardTest, UciToMove) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-    Move move = board.uci_to_move("e2e4");
+TEST_F(BoardTest, GetPieceFromEmptySquare) {
+    // Test getting pieces from empty squares in various patterns
+    std::vector<Square> empty_squares = {
+        // Empty squares around corners
+        Square(1, 0), Square(0, 1),
+        Square(6, 0), Square(7, 1),
+        Square(0, 6), Square(1, 7),
+        Square(6, 7), Square(7, 6),
 
-    EXPECT_EQ(move.from.file, 4);
-    EXPECT_EQ(move.from.rank, 1);
-    EXPECT_EQ(move.to.file, 4);
-    EXPECT_EQ(move.to.rank, 3);
-    EXPECT_EQ(move.piece, Piece::PAWN);
+        // Empty squares in center
+        Square(3, 3), Square(4, 4),
+
+        // Empty squares in asymmetric positions
+        Square(2, 4), Square(5, 3),
+        Square(1, 5), Square(6, 2)
+    };
+
+    for (const auto& square : empty_squares) {
+        board.set_piece(square, Piece(Piece::Type::EMPTY, Piece::Color::NO_COLOR));
+        Piece retrieved_piece = board.get_piece(square);
+        EXPECT_EQ(retrieved_piece.type, Piece::Type::EMPTY)
+            << "Expected empty square at (" << square.file << ", " << square.rank << ")";
+        EXPECT_EQ(retrieved_piece.color, Piece::Color::NO_COLOR)
+            << "Expected non colored square at (" << square.file << ", " << square.rank << ")";
+    }
 }
 
-TEST(BoardTest, MoveToUci) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-    Move move(Square(4, 1), Square(4, 3), Piece::PAWN);
-    std::string uci = board.move_to_uci(move);
+TEST_F(BoardTest, PrintBoard) {
+    // Set up some pieces
+    board.set_piece(Square(0, 0), Piece(Piece::Type::PAWN, Piece::Color::WHITE));
+    board.set_piece(Square(1, 0), Piece(Piece::Type::KING, Piece::Color::BLACK));
+    board.set_piece(Square(0, 1), Piece(Piece::Type::KNIGHT, Piece::Color::WHITE));
+    board.set_piece(Square(7, 7), Piece(Piece::Type::ROOK, Piece::Color::BLACK));
+    board.set_piece(Square(3, 5), Piece(Piece::Type::QUEEN, Piece::Color::WHITE));
 
-    EXPECT_EQ(uci, "e2e4");
+    std::string expected_output = "  +--------------------------+\n"
+                                  "8 |  .  .  .  .  .  .  .  r  |\n"
+                                  "7 |  .  .  .  .  .  .  .  .  |\n"
+                                  "6 |  .  .  .  Q  .  .  .  .  |\n"
+                                  "5 |  .  .  .  .  .  .  .  .  |\n"
+                                  "4 |  .  .  .  .  .  .  .  .  |\n"
+                                  "3 |  .  .  .  .  .  .  .  .  |\n"
+                                  "2 |  N  .  .  .  .  .  .  .  |\n"
+                                  "1 |  P  k  .  .  .  .  .  .  |\n"
+                                  "  +--------------------------+\n"
+                                  "     a  b  c  d  e  f  g  h\n";
+
+    std::stringstream ss;
+    ss << board;
+
+    ASSERT_STREQ(expected_output.c_str(), ss.str().c_str());
 }
 
-TEST(BoardTest, StartingPositionIsNotGameOver) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
 
-    EXPECT_FALSE(board.is_game_over());
-}
-
-TEST(BoardTest, StalematePositionIsGameOver) {
-    Board board;
-    // This is a classic stalemate position where black has no legal moves
-    board.load_fen("k7/8/8/8/8/8/1R6/7K b - - 0 1");
-
-    EXPECT_TRUE(board.is_game_over());
-}
-
-TEST(BoardTest, CheckmatePositionIsGameOver) {
-    Board board;
-    // This is a classic checkmate position (Fool's mate)
-    board.load_fen("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 0 1");
-
-    EXPECT_TRUE(board.is_game_over());
-}
-
-TEST(BoardTest, InsufficientMaterialIsGameOver) {
-    Board board;
-    // This is a position with just two kings (insufficient material)
-    board.load_fen("k7/8/8/8/8/8/8/7K w - - 0 1");
-
-    EXPECT_TRUE(board.is_game_over());
-}
-
-TEST(BoardTest, SafeSquares) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-
-    EXPECT_TRUE(board.is_square_safe(Square(4, 0), Color::WHITE)); // White king
-    EXPECT_TRUE(board.is_square_safe(Square(4, 7), Color::BLACK)); // Black king
-}
-
-TEST(BoardTest, UnsafeSquares) {
-    Board board;
-    board.load_fen(Board::STANDARD_STARTING_POSITION);
-    Move move(Square(4, 1), Square(4, 3), Piece::PAWN);
-    board.make_move(move);
-
-    EXPECT_FALSE(board.is_square_safe(Square(4, 4), Color::BLACK)); // Square controlled by white pawn
-}
