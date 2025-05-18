@@ -13,17 +13,22 @@ void Game::generate_knight_moves(std::vector<Move>& moves, Square square) const 
 
   for (const auto& dir : directions) {
     const Square target_square(square.file + dir[0], square.rank + dir[1]);
-    if (!target_square.is_valid()) {
-      continue;
-    }
+
+    if (!target_square.is_valid()) continue;
 
     const Piece target_piece = this->get_piece(target_square);
+
     if (target_piece.is_empty()) {
+      // No enemy piece encountered, add the move
       moves.push_back(Move(square, target_square, knight));
+      continue;
+    } else if (knight.is_opponent(target_piece)) {
+      // Enemy piece encountered, add the capture move
+      moves.push_back(Move(square, target_square, knight).set_captured(target_piece));
+      continue;
     } else {
-      if (knight.is_opponent(target_piece)) {
-        moves.push_back(Move(square, target_square, knight).set_captured(target_piece));
-      }
+      // Own piece encountered
+      continue;
     }
   }
 }
