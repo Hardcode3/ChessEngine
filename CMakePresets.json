@@ -1,92 +1,137 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 24,
-        "patch": 0
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install"
+      }
     },
-    "configurePresets": [
-        {
-            "name": "default",
-            "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install"
-            }
-        },
-        {
-            "name": "clang_debug",
-            "inherits": "default",
-            "description": "Debug build with debug symbols and no optimizations",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "clang_release",
-            "inherits": "default",
-            "description": "Release build with optimizations",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "msvc_debug",
-            "inherits": "default",
-            "description": "Debug build using MSVC",
-            "generator": "Visual Studio 17 2022",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_CXX_COMPILER": "x64-windows"
-            }
-        },
-        {
-            "name": "msvc_release",
-            "inherits": "default",
-            "description": "Release build using MSVC",
-            "generator": "Visual Studio 17 2022",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_COMPILER": "x64-windows"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "clang_debug",
-            "configurePreset": "clang_debug"
-        },
-        {
-            "name": "clang_release",
-            "configurePreset": "clang_release"
-        },
-        {
-            "name": "msvc_debug",
-            "configurePreset": "msvc_debug"
-        },
-        {
-            "name": "msvc_release",
-            "configurePreset": "msvc_release"
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "default",
-            "configurePreset": "default"
-        }
-    ],
-    "packagePresets": [
-        {
-            "name": "clang_release",
-            "configurePreset": "clang_release"
-        },
-        {
-            "name": "msvc_release",
-            "configurePreset": "msvc_release"
-        }
-    ]
+
+    {
+      "name": "clang_debug",
+      "inherits": "default",
+      "description": "Debug build with Clang and coverage",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "ENABLE_COVERAGE": true
+      }
+    },
+    {
+      "name": "clang_release",
+      "inherits": "default",
+      "description": "Release build with Clang (no coverage)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "ENABLE_COVERAGE": false
+      }
+    },
+
+    {
+      "name": "gcc_debug",
+      "inherits": "default",
+      "description": "Debug build with GCC and coverage",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ENABLE_COVERAGE": true
+      }
+    },
+    {
+      "name": "gcc_release",
+      "inherits": "default",
+      "description": "Release build with GCC (no coverage)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ENABLE_COVERAGE": false
+      }
+    },
+
+    {
+      "name": "msvc_debug",
+      "inherits": "default",
+      "description": "Debug build with MSVC (no coverage)",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_COVERAGE": false
+      }
+    },
+    {
+      "name": "msvc_release",
+      "inherits": "default",
+      "description": "Release build with MSVC (no coverage)",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_COVERAGE": false
+      }
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "clang_debug",
+      "configurePreset": "clang_debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "clang_release",
+      "configurePreset": "clang_release",
+      "configuration": "Release"
+    },
+    {
+      "name": "gcc_debug",
+      "configurePreset": "gcc_debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "gcc_release",
+      "configurePreset": "gcc_release",
+      "configuration": "Release"
+    },
+    {
+      "name": "msvc_debug",
+      "configurePreset": "msvc_debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "msvc_release",
+      "configurePreset": "msvc_release",
+      "configuration": "Release"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "clang_debug",
+      "configurePreset": "clang_debug"
+    },
+    {
+      "name": "gcc_debug",
+      "configurePreset": "gcc_debug"
+    },
+    {
+      "name": "msvc_debug",
+      "configurePreset": "msvc_debug"
+    }
+  ],
+
+  "packagePresets": [
+    { "name": "clang_release", "configurePreset": "clang_release" },
+    { "name": "gcc_release", "configurePreset": "gcc_release" },
+    { "name": "msvc_release", "configurePreset": "msvc_release" }
+  ]
 }

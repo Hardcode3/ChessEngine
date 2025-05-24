@@ -27,6 +27,7 @@ set(COMPILE_PACKAGE "Packages and exports library and binaries" ON)
 
 include(cmake/clang_format.cmake)
 include(cmake/clang_tidy.cmake)
+include(cmake/coverage.cmake)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
