@@ -1,92 +1,92 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 24,
-        "patch": 0
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install"
+      }
     },
-    "configurePresets": [
-        {
-            "name": "default",
-            "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install"
-            }
-        },
-        {
-            "name": "clang_debug",
-            "inherits": "default",
-            "description": "Debug build with debug symbols and no optimizations",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "clang_release",
-            "inherits": "default",
-            "description": "Release build with optimizations",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "msvc_debug",
-            "inherits": "default",
-            "description": "Debug build using MSVC",
-            "generator": "Visual Studio 17 2022",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_CXX_COMPILER": "x64-windows"
-            }
-        },
-        {
-            "name": "msvc_release",
-            "inherits": "default",
-            "description": "Release build using MSVC",
-            "generator": "Visual Studio 17 2022",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_COMPILER": "x64-windows"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "clang_debug",
-            "configurePreset": "clang_debug"
-        },
-        {
-            "name": "clang_release",
-            "configurePreset": "clang_release"
-        },
-        {
-            "name": "msvc_debug",
-            "configurePreset": "msvc_debug"
-        },
-        {
-            "name": "msvc_release",
-            "configurePreset": "msvc_release"
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "default",
-            "configurePreset": "default"
-        }
-    ],
-    "packagePresets": [
-        {
-            "name": "clang_release",
-            "configurePreset": "clang_release"
-        },
-        {
-            "name": "msvc_release",
-            "configurePreset": "msvc_release"
-        }
-    ]
+    {
+      "name": "clang_debug",
+      "inherits": "default",
+      "description": "Debug build with debug symbols and no optimizations",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "clang_release",
+      "inherits": "default",
+      "description": "Release build with optimizations",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "msvc_debug",
+      "inherits": "default",
+      "description": "Debug build using MSVC",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "x64-windows"
+      }
+    },
+    {
+      "name": "msvc_release",
+      "inherits": "default",
+      "description": "Release build using MSVC",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "x64-windows"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "clang_debug",
+      "configurePreset": "clang_debug"
+    },
+    {
+      "name": "clang_release",
+      "configurePreset": "clang_release"
+    },
+    {
+      "name": "msvc_debug",
+      "configurePreset": "msvc_debug"
+    },
+    {
+      "name": "msvc_release",
+      "configurePreset": "msvc_release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default"
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "clang_release",
+      "configurePreset": "clang_release"
+    },
+    {
+      "name": "msvc_release",
+      "configurePreset": "msvc_release"
+    }
+  ]
 }
