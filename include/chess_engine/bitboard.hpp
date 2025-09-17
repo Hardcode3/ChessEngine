@@ -1,3 +1,4 @@
+#pragma once
 #include <chess_engine/square.hpp>
 #include <cstdint>
 #include <iostream>

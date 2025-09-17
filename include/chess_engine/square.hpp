@@ -1,3 +1,4 @@
+#pragma once
 
 /**
  * Enum representing squares of a chess board.
