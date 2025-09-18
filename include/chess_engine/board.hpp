@@ -1,5 +1,6 @@
 #pragma once
 #include <chess_engine/bitboard.hpp>
+#include <chess_engine/piece.hpp>
 #include <chess_engine/square.hpp>
 
 class Board {
@@ -22,5 +23,11 @@ class Board {
   int m_fullmove_number;
 
  public:
-  void dummy();
+  Bitboard white_pieces() const;
+  Bitboard black_pieces() const;
+  Bitboard occupied() const;
+  Piece get_piece(Square sq) const;
+  void set_piece(Square sq, Piece p);
+  void remove_piece(Square sq);
+  void print(std::ostream& os) const;
 };
