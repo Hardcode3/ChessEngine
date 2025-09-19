@@ -1,4 +1,51 @@
 #include <chess_engine/board.hpp>
+#include <sstream>
+
+Board::Board() {}
+
+Board::Board(const std::string& fen) {
+  /*
+   * https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+   * FEN (Forsyth-Edwards Notation) has 6 fields separated by slashes and spaces:
+   *
+   * 1. Piece placement (ranks 8 → 1, separated by /).
+   * 2. Side to move (w or b).
+   * 3. Castling availability (KQkq or -).
+   * 4. En passant target square (like e3 or -).
+   * 5. Halfmove clock (for 50-move rule).
+   * 6. Fullmove number (starts at 1).
+   *
+   * Example FEN for starting position: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+   */
+  std::istringstream iss(fen);
+  std::string token;
+  iss >> token;
+
+  // TODO
+
+  // Second token: side to move
+  iss >> token;
+  m_is_white_turn = (token == "w") ? true : false;
+
+  // Third token: Castling Rights
+  iss >> token;
+  m_white_castle_kingside = token.find('K') != std::string::npos;
+  m_white_castle_queenside = token.find('Q') != std::string::npos;
+  m_black_castle_kingside = token.find('k') != std::string::npos;
+  m_black_castle_queenside = token.find('q') != std::string::npos;
+
+  // Fourth token: en passant
+  iss >> token;
+  if (token == "-") {
+    // TODO requires better square
+  }
+
+  // Fifth token: Halfmove clock
+  iss >> m_halfmove_clock;
+
+  // Sixth token: Fullmove number
+  iss >> m_fullmove_number;
+}
 
 Bitboard Board::white_pieces() const {
   Bitboard bb;
@@ -96,9 +143,9 @@ void Board::set_piece(Square sq, Piece p) {
       m_b_king.set(sq);
       break;
     case Piece::NO_PIECE:
-      std::cerr << "Empty piece will not be set\n";
+      std::cerr << "NO_PIECE piece cannot not be set\n";
     default:
-      throw std::runtime_error("Invalid piece: cannot set piece on a given square");
+      throw std::runtime_error("Invalid piece: cannot set piece on the given square");
       break;
   }
 }

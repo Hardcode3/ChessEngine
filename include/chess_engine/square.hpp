@@ -1,81 +1,48 @@
 #pragma once
+#include <string>
 
 /**
- * Enum representing squares of a chess board.
+ * @brief Represents a square on the chess board.
  *
- * Mapping is: A1 = 0 and H8 = 63
- *
- * NO_SQ = 64 and depicts an invalid square.
- *
- * Why using an unscoped enum?
- * - square enum must be interpreted as an int to perform bit shifts
- * - implicit conversions must therefore be feasible
- * - scoped enums (enum class ...) do not allow implicit conversions
+ * Internally wraps an enum with values 0–63 for A1–H8,
+ * and 64 (NO_SQ) for invalid.
  */
-enum Square : int {
-  A1,
-  B1,
-  C1,
-  D1,
-  E1,
-  F1,
-  G1,
-  H1,
-  A2,
-  B2,
-  C2,
-  D2,
-  E2,
-  F2,
-  G2,
-  H2,
-  A3,
-  B3,
-  C3,
-  D3,
-  E3,
-  F3,
-  G3,
-  H3,
-  A4,
-  B4,
-  C4,
-  D4,
-  E4,
-  F4,
-  G4,
-  H4,
-  A5,
-  B5,
-  C5,
-  D5,
-  E5,
-  F5,
-  G5,
-  H5,
-  A6,
-  B6,
-  C6,
-  D6,
-  E6,
-  F6,
-  G6,
-  H6,
-  A7,
-  B7,
-  C7,
-  D7,
-  E7,
-  F7,
-  G7,
-  H7,
-  A8,
-  B8,
-  C8,
-  D8,
-  E8,
-  F8,
-  G8,
-  H8,
-  NO_SQ
+class Square {
+ public:
+  /**
+   * Enum representing squares of a chess board.
+   *
+   * Mapping is: A1 = 0 and H8 = 63
+   *
+   * Why using an unscoped enum?
+   * - square enum must be interpreted as an int to perform bit shifts
+   * - implicit conversions must therefore be feasible
+   * - scoped enums (enum class ...) do not allow implicit conversions
+   */ // clang-format off
+  enum Value : int {
+      A1, B1, C1, D1, E1, F1, G1, H1,
+      A2, B2, C2, D2, E2, F2, G2, H2,
+      A3, B3, C3, D3, E3, F3, G3, H3,
+      A4, B4, C4, D4, E4, F4, G4, H4,
+      A5, B5, C5, D5, E5, F5, G5, H5,
+      A6, B6, C6, D6, E6, F6, G6, H6,
+      A7, B7, C7, D7, E7, F7, G7, H7,
+      A8, B8, C8, D8, E8, F8, G8, H8,
+    };  // clang-format on
+
+ private:
+  Value m_value;
+
+ public:
+  Square(Value v);
+  Square(int file, int rank);
+  Square(const std::string& s);
+
+  Value value() const;
+  int file() const;
+  int rank() const;
+  std::string to_string() const;
+
+  bool operator==(const Square& other) const;
+  bool operator!=(const Square& other) const;
 };

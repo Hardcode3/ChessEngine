@@ -1,6 +1,9 @@
+#include <fmt/color.h>
+
 #include <chess_engine/piece.hpp>
 
 Piece::Piece(char c) {
+  m_symbol = c;
   switch (c) {
     case 'P':
       m_type = P;
@@ -42,9 +45,9 @@ Piece::Piece(char c) {
       m_type = NO_PIECE;
       break;
     default:
-      throw std::invalid_argument("Invalid piece character");
+      const std::string msg = fmt::format("Invalid piece character {}", c);
+      throw std::invalid_argument(msg);
   }
-  m_symbol = c;
 }
 
 char Piece::to_char() const { return m_symbol; }

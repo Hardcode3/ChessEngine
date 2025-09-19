@@ -23,6 +23,8 @@ class Board {
   int m_fullmove_number;
 
  public:
+  Board();
+  Board(const std::string& fen);
   Bitboard white_pieces() const;
   Bitboard black_pieces() const;
   Bitboard occupied() const;
