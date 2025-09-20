@@ -1,7 +1,7 @@
 #include <chess_engine/board.hpp>
 #include <sstream>
 
-Board::Board() {}
+Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {}
 
 Board::Board(const std::string& fen) {
   /*
@@ -37,7 +37,9 @@ Board::Board(const std::string& fen) {
   // Fourth token: en passant
   iss >> token;
   if (token == "-") {
-    // TODO requires better square
+    m_en_passant_sq = std::nullopt;
+  } else {
+    m_en_passant_sq = Square(token);
   }
 
   // Fifth token: Halfmove clock
@@ -171,8 +173,7 @@ void Board::print(std::ostream& os) const {
   for (int rank = 7; rank >= 0; --rank) {
     os << (rank + 1) << " ";  // rank numbers on the left
     for (int file = 0; file < 8; ++file) {
-      Square sq = Square(rank * 8 + file);
-
+      Square sq(rank, file);
       Piece p = get_piece(sq);
       char c = p.to_char();
       os << c << " ";

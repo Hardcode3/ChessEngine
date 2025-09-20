@@ -1,4 +1,4 @@
-#include <fmt/color.h>
+#include <fmt/core.h>
 
 #include <chess_engine/piece.hpp>
 

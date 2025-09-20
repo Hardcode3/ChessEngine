@@ -10,7 +10,7 @@ class Board {
 
   // Game state
   bool m_is_white_turn;
-  Square m_en_passant_sq;
+  std::optional<Square> m_en_passant_sq;
 
   // Castling abilies
   bool m_white_castle_kingside, m_white_castle_queenside;

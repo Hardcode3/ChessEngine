@@ -3,6 +3,13 @@
 #include <chess_engine/square.hpp>
 #include <stdexcept>
 
+Square::Square(int v) : m_value(static_cast<Value>(v)) {
+  if (v < 0 || v > 63) {
+    const std::string msg = fmt::format("Invalid flattened square index {}, must stay in range [0,63]", v);
+    throw std::invalid_argument(msg);
+  }
+}
+
 Square::Square(Value v) : m_value(v) {}
 
 Square::Square(int file, int rank) {
@@ -36,10 +43,14 @@ Square::Square(const std::string& s) {
   m_value = static_cast<Value>(irank * 8 + ifile);
 }
 
+Square::Value Square::value() const { return m_value; }
+
 int Square::file() const { return static_cast<int>(m_value) % 8; }
+
 int Square::rank() const { return static_cast<int>(m_value) / 8; }
 
 std::string Square::to_string() const { return {char('a' + file()), char('1' + rank())}; }
 
 bool Square::operator==(const Square& other) const { return m_value == other.m_value; }
+
 bool Square::operator!=(const Square& other) const { return m_value != other.m_value; }
