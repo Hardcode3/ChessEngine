@@ -6,6 +6,8 @@ Board::Board() : Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 Board::Board(const std::string& fen) {
   /*
    * https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+   * https://www.chess.com/terms/fen-chess
+   *
    * FEN (Forsyth-Edwards Notation) has 6 fields separated by slashes and spaces:
    *
    * 1. Piece placement (ranks 8 → 1, separated by /).
@@ -21,7 +23,22 @@ Board::Board(const std::string& fen) {
   std::string token;
   iss >> token;
 
-  // TODO
+  int index = 64 - 8;
+  for (auto c : token) {
+    if (c == '/') {
+      index -= 2 * 8;
+      continue;
+    } else if (isdigit(c)) {
+      const int skip = c - '0';
+      index += skip;
+      continue;
+    } else {
+      const Square square(index);
+      Piece piece(c);
+      set_piece(square, piece);
+      index++;
+    }
+  }
 
   // Second token: side to move
   iss >> token;
