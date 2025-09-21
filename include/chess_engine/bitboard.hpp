@@ -32,13 +32,13 @@ class Bitboard {
 
  public:
   /** @brief Constructs an empty bitboard (all bits = 0). */
-  Bitboard() : m_bb() {}  // Zero initialization granted by C++ standard
+  Bitboard();
 
   /** @brief Constructs a bitboard from a raw 64-bit value. */
-  Bitboard(uint64_t value) : m_bb(value) {}
+  Bitboard(uint64_t value);
 
   /** @brief Returns the raw 64-bit value of the bitboard. */
-  uint64_t value() { return m_bb; }
+  uint64_t value();
 
   /**
    * @brief Sets a bit (places a piece) on a given square.
@@ -56,7 +56,8 @@ class Bitboard {
    * 1ULL << E2 = 00000000 00000000 ... 00010000 00000000
    * m_bb |= (1ULL << sq) = 00000000 00000000 ... 00010000 00000000
    */
-  void set(Square sq) { m_bb |= (1ULL << sq); }
+  void set(Square sq);
+  void set(Square::Value sq);
 
   /**
    * @brief Clears a bit (removes a piece) on a given square.
@@ -74,7 +75,8 @@ class Bitboard {
    * ~(1ULL << E2) = 11111111 11111111 ... 11101111 11111111
    * m_bb &= ~(1ULL << sq) = 00000000 00000000 ... 00000000 00000000
    */
-  void clear(Square sq) { m_bb &= ~(1ULL << sq); }
+  void clear(Square sq);
+  void clear(Square::Value sq);
 
   /**
    * @brief Checks if a square is occupied.
@@ -92,10 +94,11 @@ class Bitboard {
    * (m_bb >> E2) & 1ULL = true
    *
    */
-  bool test(Square sq) const { return (m_bb >> sq) & 1ULL; }
+  bool test(Square sq) const;
+  bool test(Square::Value sq) const;
 
   /** @brief Clears the whole bitboard (all bits = 0). */
-  void reset() { m_bb = 0ULL; }
+  void reset();
 
   /**
    * @brief Prints the bitboard as an 8×8 grid.
@@ -105,28 +108,13 @@ class Bitboard {
    *
    * The output starts from rank 8 down to rank 1.
    */
-  void print() const {
-    for (int rank = 7; rank >= 0; --rank) {
-      for (int file = 0; file < 8; ++file) {
-        int sq = rank * 8 + file;
-        std::cout << (test(static_cast<Square>(sq)) ? "1 " : ". ");
-      }
-      std::cout << "\n";
-    }
-    std::cout << "\n";
-  }
+  void print() const;
 
-  Bitboard operator|(const Bitboard& other) const { return m_bb | other.m_bb; }
-  Bitboard operator&(const Bitboard& other) const { return m_bb & other.m_bb; }
-  Bitboard& operator|=(const Bitboard& other) {
-    m_bb |= other.m_bb;
-    return *this;
-  }
-  Bitboard& operator&=(const Bitboard& other) {
-    m_bb &= other.m_bb;
-    return *this;
-  }
-  Bitboard operator~() const { return ~m_bb; }
-  bool operator==(const Bitboard& other) const { return m_bb == other.m_bb; }
-  bool operator!=(const Bitboard& other) const { return m_bb != other.m_bb; }
+  bool operator==(const Bitboard& other) const;
+  bool operator!=(const Bitboard& other) const;
+  Bitboard operator|(const Bitboard& other) const;
+  Bitboard operator&(const Bitboard& other) const;
+  Bitboard operator~() const;
+  Bitboard& operator|=(const Bitboard& other);
+  Bitboard& operator&=(const Bitboard& other);
 };
