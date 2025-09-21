@@ -80,12 +80,12 @@ class Board {
   /**
    * @brief Retrieves the piece on a given square.
    * @param sq The square to query.
-   * @return Piece located on `sq`, or Piece::None if empty.
+   * @return Piece located on `sq' of NO_PIECE ('.').
    */
   Piece get_piece(Square sq) const;
 
   /**
-   * @brief Places a piece on a given square.
+   * @brief (Re)Places a piece on a given square.
    * @param sq The square where the piece will be placed.
    * @param p The piece type (including color).
    */
@@ -113,5 +113,8 @@ class Board {
    * R N B Q K B N R
    * @endcode
    */
-  void print(std::ostream& os) const;
+  void print() const;
+
+ private:
+  bool has_overlap() const;
 };

@@ -74,7 +74,7 @@ TEST(BitboardTest, ConstructorFromValue) {
  * @test Set and test a square.
  * @brief After setting E2, it should be occupied, and E4 should remain empty.
  */
-TEST(BitboardTest, SetAndTestSquare) {
+TEST(BitboardTest, SetAndTestSquareFromSquareValue) {
   Bitboard bb;
   bb.set(Square::E2);
   EXPECT_TRUE(bb.test(Square::E2));
@@ -82,15 +82,45 @@ TEST(BitboardTest, SetAndTestSquare) {
 }
 
 /**
+ * @test Set and test a square.
+ * @brief After setting E2, it should be occupied, and E4 should remain empty.
+ */
+TEST(BitboardTest, SetAndTestSquareFromSquare) {
+  Bitboard bb;
+
+  Square e2(Square::E2);
+  Square e4(Square::E4);
+
+  bb.set(e2);
+  EXPECT_TRUE(bb.test(e2));
+  EXPECT_FALSE(bb.test(e4));
+}
+
+/**
  * @test Clear a square.
  * @brief After clearing E2, the bitboard should show it as empty.
  */
-TEST(BitboardTest, ClearSquare) {
+TEST(BitboardTest, ClearSquareFromSquareValue) {
   Bitboard bb;
   bb.set(Square::E2);
   EXPECT_TRUE(bb.test(Square::E2));
   bb.clear(Square::E2);
   EXPECT_FALSE(bb.test(Square::E2));
+}
+
+/**
+ * @test Clear a square.
+ * @brief After clearing E2, the bitboard should show it as empty.
+ */
+TEST(BitboardTest, ClearSquareFromSquare) {
+  Bitboard bb;
+
+  Square e2(Square::E2);
+
+  bb.set(e2);
+  EXPECT_TRUE(bb.test(e2));
+  bb.clear(e2);
+  EXPECT_FALSE(bb.test(e2));
 }
 
 /**

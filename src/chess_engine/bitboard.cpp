@@ -12,7 +12,14 @@ void Bitboard::set(Square::Value sq) { m_bb |= (1ULL << sq); }
 void Bitboard::clear(Square sq) { m_bb &= ~(1ULL << sq.value()); }
 void Bitboard::clear(Square::Value sq) { m_bb &= ~(1ULL << sq); }
 
-bool Bitboard::test(Square sq) const { return (m_bb >> sq.value()) & 1ULL; }
+bool Bitboard::test(Square sq) const {
+  Square::Value v = sq.value();
+  int vi = static_cast<int>(v);
+  uint64_t val = (m_bb >> sq.value());
+  bool res = val & 1ULL;
+
+  return res;
+}
 bool Bitboard::test(Square::Value sq) const { return (m_bb >> sq) & 1ULL; }
 
 void Bitboard::reset() { m_bb = 0ULL; }
