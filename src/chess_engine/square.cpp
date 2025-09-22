@@ -18,9 +18,8 @@ Square::Square(int file, int rank) {
   if (file < 0 || file > 7 || rank < 0 || rank > 7) {
     const std::string msg = fmt::format("Invalid file ({}) or rank({}), must stay within ranke [0,7].", file, rank);
     throw std::invalid_argument(msg);
-  } else {
-    m_value = static_cast<Value>(rank * 8 + file);
   }
+  m_value = static_cast<Value>(rank * 8 + file);
 }
 
 Square::Square(const std::string& s) {
