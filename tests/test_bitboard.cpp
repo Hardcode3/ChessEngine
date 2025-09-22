@@ -36,7 +36,7 @@ TEST(BitboardTest, PrintOutputsCorrectBoard) {
 
   // Check key positions:
   // - H8 (top right corner) should be "1"
-  EXPECT_NE(output.find("1"), std::string::npos);
+  EXPECT_NE(output.find(". . . . . . . 1"), std::string::npos);
 
   // - E4 should be in the middle
   EXPECT_NE(output.find(". . . . 1 . . ."), std::string::npos);
