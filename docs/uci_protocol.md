@@ -1,9 +1,13 @@
 # UCI Protocol Documentation
 
+- 🔗 [Wikipedia - Universal Chess Interface](https://en.wikipedia.org/wiki/Universal_Chess_Interface)
+
 ## Overview
+
 The Universal Chess Interface (UCI) is a protocol that enables communication between a chess engine and a graphical user interface (GUI). This document describes the main UCI commands and their usage.
 
 ## Basic Communication
+
 - The engine receives commands through standard input (stdin)
 - The engine sends responses through standard output (stdout)
 - All commands and responses are text-based
@@ -14,26 +18,31 @@ The Universal Chess Interface (UCI) is a protocol that enables communication bet
 ### Initialization Commands
 
 #### `uci`
+
 - **Purpose**: Initial handshake between GUI and engine
 - **Engine Response**:
-  ```
-  id name <engine_name>
-  id author <author_name>
-  option name <option_name> type <option_type> ...
-  uciok
-  ```
+
+```
+id name <engine_name>
+id author <author_name>
+option name <option_name> type <option_type> ...
+uciok
+```
 
 #### `isready`
+
 - **Purpose**: Check if engine is ready to receive commands
 - **Engine Response**: `readyok`
 
 #### `ucinewgame`
+
 - **Purpose**: Signal the start of a new game
 - **Engine Response**: None required
 
 ### Position and Move Commands
 
 #### `position [fen <fenstring> | startpos] moves <move1> ... <movei>`
+
 - **Purpose**: Set up a position on the internal board
 - **Parameters**:
   - `fen <fenstring>`: Set up position from FEN string
@@ -42,6 +51,7 @@ The Universal Chess Interface (UCI) is a protocol that enables communication bet
 - **Example**: `position startpos moves e2e4 e7e5`
 
 #### `go`
+
 - **Purpose**: Start calculating on the current position
 - **Parameters** (all optional):
   - `searchmoves <move1> ... <movei>`: Restrict search to these moves
@@ -59,22 +69,26 @@ The Universal Chess Interface (UCI) is a protocol that enables communication bet
 - **Engine Response**: `bestmove <move> [ponder <move>]`
 
 #### `stop`
+
 - **Purpose**: Stop calculating as soon as possible
 - **Engine Response**: `bestmove <move> [ponder <move>]`
 
 ### Debug and Analysis Commands
 
 #### `setoption name <id> [value <x>]`
+
 - **Purpose**: Set the value of an option
 - **Example**: `setoption name Hash value 128`
 
 #### `debug [on | off]`
+
 - **Purpose**: Switch debug mode on or off
 - **Engine Response**: None required
 
 ### Quit Command
 
 #### `quit`
+
 - **Purpose**: Quit the program as soon as possible
 - **Engine Response**: None required
 
@@ -87,6 +101,7 @@ info depth <x> seldepth <y> time <t> nodes <n> score cp <x> pv <move1> ... <move
 ```
 
 Where:
+
 - `depth`: Current search depth
 - `seldepth`: Selective search depth
 - `time`: Time spent searching in ms

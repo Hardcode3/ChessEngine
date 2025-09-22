@@ -114,7 +114,4 @@ class Board {
    * @endcode
    */
   void print() const;
-
- private:
-  bool has_overlap() const;
 };
