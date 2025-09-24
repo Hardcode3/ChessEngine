@@ -9,7 +9,7 @@
  *
  * Take file C for instance.
  * Each group of 8 bits defines a row.
- * The thrid bit corresponds to file C.
+ * The third bit corresponds to file C.
  *
  * In binary representation:
  *      0000 0100 0000 0100 ... 0000 0100 0000 0100
