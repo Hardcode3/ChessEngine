@@ -1,4 +1,6 @@
 #pragma once
+#include <fmt/core.h>
+
 #include <cctype>
 #include <stdexcept>
 
@@ -28,38 +30,84 @@ class Piece {
    * @param c Type of the piece to build
    * @throw std::invalid_argument when the Piece character is invalid
    */
-  Piece(char c = '.');
+  constexpr Piece(char c = '.') {
+    m_symbol = c;
+    switch (c) {
+      case 'P':
+        m_type = P;
+        break;
+      case 'N':
+        m_type = N;
+        break;
+      case 'B':
+        m_type = B;
+        break;
+      case 'R':
+        m_type = R;
+        break;
+      case 'Q':
+        m_type = Q;
+        break;
+      case 'K':
+        m_type = K;
+        break;
+      case 'p':
+        m_type = p;
+        break;
+      case 'n':
+        m_type = n;
+        break;
+      case 'b':
+        m_type = b;
+        break;
+      case 'r':
+        m_type = r;
+        break;
+      case 'q':
+        m_type = q;
+        break;
+      case 'k':
+        m_type = k;
+        break;
+      case '.':
+        m_type = NO_PIECE;
+        break;
+      default:
+        const std::string msg = fmt::format("Invalid piece character {}", c);
+        throw std::invalid_argument(msg);
+    }
+  }
 
   /**
    * @brief Returns the underlying enum type of the piece.
    * @return Type of the piece
    */
-  Type type() const { return m_type; }
+  constexpr Type type() const { return m_type; }
 
   /**
    * @brief Checks if the piece is white.
    * @return true if the piece is white, false otherwise
    */
-  bool is_white() const { return m_type >= P && m_type <= K; }
+  constexpr bool is_white() const { return m_type >= P && m_type <= K; }
 
   /**
    * @brief Checks if the piece is black.
    * @return true if the piece is black, false otherwise
    */
-  bool is_black() const { return m_type >= p && m_type <= k; }
+  constexpr bool is_black() const { return m_type >= p && m_type <= k; }
 
   /**
    * @brief Checks if the piece represents no piece.
    * @return true if NO_PIECE, false otherwise
    */
-  bool is_none() const { return m_type == NO_PIECE; }
+  constexpr bool is_none() const { return m_type == NO_PIECE; }
 
   /**
    * @brief Converts the piece to a printable character.
    * @return 'P','N',...,'k' for pieces, '.' for NO_PIECE
    */
-  char to_char() const;
+  constexpr char to_char() const { return m_symbol; };
 
-  bool operator==(const Piece& other) const { return m_type == other.m_type; }
-  bool operator!=(const Piece& other) const { return m_type != other.m_type; }
+  constexpr bool operator==(const Piece& other) const { return m_type == other.m_type; }
+  constexpr bool operator!=(const Piece& other) const { return m_type != other.m_type; }
 };
