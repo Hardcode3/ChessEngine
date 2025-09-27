@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <chess_engine/attacks.hpp>
 #include <chess_engine/bitboard.hpp>
 #include <chess_engine/bitmasks.hpp>
-#include <chess_engine/knight.hpp>
 #include <chess_engine/square.hpp>
 
-using namespace Bitmasks;
+using namespace Attacks;
 
 TEST(KnightAttackTest, CornerA1) {
   Bitboard expected;
