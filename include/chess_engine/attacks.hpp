@@ -24,7 +24,7 @@ constexpr uint64_t knight_attacks_for_square(int sq) {
   return attacks;
 }
 
-constexpr std::array<Bitboard, 64> KNIGHT_ATTACKS = [] {
+constexpr std::array<Bitboard, 64> KNIGHT_ATTACKS = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
     table[sq] = Bitboard(knight_attacks_for_square(sq));
