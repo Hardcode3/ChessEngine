@@ -6,6 +6,15 @@
 
 namespace Attacks {
 
+/**
+ * @brief Computes the attack bitboard for a knight on a given square.
+ *
+ * Given a square index (0-63), returns a bitboard with all squares attacked by a knight from that square.
+ * Takes into account board edges to avoid wrap-around attacks.
+ *
+ * @param sq The square index (0 = a1, 63 = h8).
+ * @return Bitboard representing all possible knight attacks from the given square.
+ */
 constexpr uint64_t knight_attacks_for_square(int sq) {
   const uint64_t bb = 1ULL << sq;
   uint64_t attacks = 0ULL;
@@ -24,6 +33,12 @@ constexpr uint64_t knight_attacks_for_square(int sq) {
   return attacks;
 }
 
+/**
+ * @brief Precomputed bitboards for knight attacks from every square.
+ *
+ * For each square, contains a bitboard with all destination squares a knight can attack from that square.
+ * Uses knight_attacks_for_square() to fill the table at compile time.
+ */
 constexpr std::array<Bitboard, 64> KNIGHT_ATTACKS = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
