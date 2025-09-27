@@ -1,7 +1,7 @@
 message(STATUS "> Found tests directory")
 
-file(GLOB TESTS_SOURCES "*.cpp")
-file(GLOB TESTS_HEADERS "*.hpp")
+file(GLOB_RECURSE TESTS_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/chess_engine/*.cpp")
+file(GLOB_RECURSE TESTS_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/chess_engine/*.hpp")
 
 foreach(TEST_FILE ${TESTS_SOURCES})
     # Get file name (Without Extension)

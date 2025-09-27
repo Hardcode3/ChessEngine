@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <chess_engine/attacks.hpp>
+#include <chess_engine/attacks/king.hpp>
 #include <chess_engine/bitboard.hpp>
 #include <chess_engine/bitmasks.hpp>
 #include <chess_engine/square.hpp>
