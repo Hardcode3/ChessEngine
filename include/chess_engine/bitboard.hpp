@@ -129,6 +129,8 @@ class Bitboard {
   constexpr Bitboard operator|(const Bitboard& other) const { return m_bb | other.m_bb; }
   constexpr Bitboard operator&(const Bitboard& other) const { return m_bb & other.m_bb; }
   constexpr Bitboard operator~() const { return ~m_bb; }
+  constexpr Bitboard operator<<(int n) const { return m_bb << n; }
+  constexpr Bitboard operator>>(int n) const { return m_bb >> n; }
   constexpr Bitboard& operator|=(const Bitboard& other) {
     m_bb |= other.m_bb;
     return *this;
