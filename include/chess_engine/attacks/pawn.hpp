@@ -6,7 +6,13 @@
 
 namespace Attacks {
 
-// Single pushes (1 square forward)
+  
+/**
+ * @brief Precomputed bitboards for white pawn single pushes (1 square forward).
+ *
+ * For each square, contains a bitboard with the destination square if a white pawn moves one square forward.
+ * Only valid for squares on ranks 1 to 7 (0-based), as pawns on rank 8 cannot move forward.
+ */
 constexpr std::array<Bitboard, 64> WHITE_PAWN_SINGLE_PUSH = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
@@ -18,6 +24,13 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_SINGLE_PUSH = []() constexpr {
   return table;
 }();
 
+
+/**
+ * @brief Precomputed bitboards for black pawn single pushes (1 square forward).
+ *
+ * For each square, contains a bitboard with the destination square if a black pawn moves one square forward.
+ * Only valid for squares on ranks 2 to 8 (0-based), as pawns on rank 1 cannot move forward.
+ */
 constexpr std::array<Bitboard, 64> BLACK_PAWN_SINGLE_PUSH = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
@@ -29,7 +42,13 @@ constexpr std::array<Bitboard, 64> BLACK_PAWN_SINGLE_PUSH = []() constexpr {
   return table;
 }();
 
-// Double pushes from starting rank
+
+/**
+ * @brief Precomputed bitboards for white pawn double pushes (2 squares forward).
+ *
+ * For each square, contains a bitboard with the destination square if a white pawn moves two squares forward.
+ * Only valid for squares on rank 2 (0-based), as only pawns on their starting rank can double push.
+ */
 constexpr std::array<Bitboard, 64> WHITE_PAWN_DOUBLE_PUSH = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
@@ -41,6 +60,13 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_DOUBLE_PUSH = []() constexpr {
   return table;
 }();
 
+
+/**
+ * @brief Precomputed bitboards for black pawn double pushes (2 squares forward).
+ *
+ * For each square, contains a bitboard with the destination square if a black pawn moves two squares forward.
+ * Only valid for squares on rank 7 (0-based), as only pawns on their starting rank can double push.
+ */
 constexpr std::array<Bitboard, 64> BLACK_PAWN_DOUBLE_PUSH = []() constexpr {
   std::array<Bitboard, 64> table{};
   for (int sq = 0; sq < 64; ++sq) {
@@ -52,7 +78,13 @@ constexpr std::array<Bitboard, 64> BLACK_PAWN_DOUBLE_PUSH = []() constexpr {
   return table;
 }();
 
-// Pawn attacks (diagonal captures)
+
+/**
+ * @brief Precomputed bitboards for white pawn attacks (diagonal captures).
+ *
+ * For each square, contains a bitboard with the destination squares if a white pawn captures diagonally (NW and NE).
+ * Only valid for squares on ranks 1 to 7 (0-based), as pawns on rank 8 cannot attack forward.
+ */
 constexpr std::array<Bitboard, 64> WHITE_PAWN_ATTACKS = []() constexpr {
   std::array<Bitboard, 64> table{};
 
@@ -70,6 +102,13 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_ATTACKS = []() constexpr {
   return table;
 }();
 
+
+/**
+ * @brief Precomputed bitboards for black pawn attacks (diagonal captures).
+ *
+ * For each square, contains a bitboard with the destination squares if a black pawn captures diagonally (SW and SE).
+ * Only valid for squares on ranks 2 to 8 (0-based), as pawns on rank 1 cannot attack forward.
+ */
 constexpr std::array<Bitboard, 64> BLACK_PAWN_ATTACKS = []() constexpr {
   std::array<Bitboard, 64> table{};
 
