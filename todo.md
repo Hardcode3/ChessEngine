@@ -3,6 +3,7 @@
 ## Roadmap
 
 1. 🚧 Move generation with pseudo legal moves (all moves)
+   1. [x] Knight moves compile time generation
 2. 🔜 Move generation with legal moves filter
 3. 🔜 Move application/undo
 4. 🔜 Implement a basic evaluation (material balance first, then piece-square tables).
@@ -14,6 +15,8 @@
 - [ ] (utils) `std::string Board.to_fen()` function
 
 ## Tests
+
+- [ ] Add compile time tests for constexpr objects to ensure compile time evaluation
 
 ## Container
 
