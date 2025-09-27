@@ -1,5 +1,9 @@
 # 📌 Title
 
+## 📄 Description
+
+Describe the changes made and the motivation behind them. Include any relevant context or background information.
+
 ## 🧩 Type of Change
 
 Select the type of change your pull request introduces by **removing** unnecessary items.
@@ -32,10 +36,6 @@ Select the type of release this PR corresponds to:
 - 🧪 Minor — Backward-compatible feature
 - 💥 Major — Breaking change
 - 🚫 None — Does not affect the public API or functionality
-
-## 📄 Description
-
-Describe the changes made and the motivation behind them. Include any relevant context or background information.
 
 ## 🗒️ Changelog Entry <!-- optional -->
 
