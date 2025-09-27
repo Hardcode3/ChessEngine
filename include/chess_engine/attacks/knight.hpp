@@ -6,6 +6,7 @@
 
 namespace Attacks {
 
+  
 /**
  * @brief Computes the attack bitboard for a knight on a given square.
  *
@@ -32,6 +33,7 @@ constexpr uint64_t knight_attacks_for_square(int sq) {
 
   return attacks;
 }
+
 
 /**
  * @brief Precomputed bitboards for knight attacks from every square.

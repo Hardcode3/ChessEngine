@@ -6,6 +6,7 @@
 
 namespace Attacks {
 
+  
 /**
  * @brief Precomputed bitboards for white pawn single pushes (1 square forward).
  *
@@ -22,6 +23,7 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_SINGLE_PUSH = []() constexpr {
   }
   return table;
 }();
+
 
 /**
  * @brief Precomputed bitboards for black pawn single pushes (1 square forward).
@@ -40,6 +42,7 @@ constexpr std::array<Bitboard, 64> BLACK_PAWN_SINGLE_PUSH = []() constexpr {
   return table;
 }();
 
+
 /**
  * @brief Precomputed bitboards for white pawn double pushes (2 squares forward).
  *
@@ -57,6 +60,7 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_DOUBLE_PUSH = []() constexpr {
   return table;
 }();
 
+
 /**
  * @brief Precomputed bitboards for black pawn double pushes (2 squares forward).
  *
@@ -73,6 +77,7 @@ constexpr std::array<Bitboard, 64> BLACK_PAWN_DOUBLE_PUSH = []() constexpr {
   }
   return table;
 }();
+
 
 /**
  * @brief Precomputed bitboards for white pawn attacks (diagonal captures).
@@ -96,6 +101,7 @@ constexpr std::array<Bitboard, 64> WHITE_PAWN_ATTACKS = []() constexpr {
   }
   return table;
 }();
+
 
 /**
  * @brief Precomputed bitboards for black pawn attacks (diagonal captures).
