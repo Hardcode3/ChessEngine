@@ -76,36 +76,6 @@ constexpr uint64_t FILE_G = 0x4040404040404040ULL;
 constexpr uint64_t FILE_H = 0x8080808080808080ULL;
 
 /**
- * uint64_t mask with zeros on file A.
- */
-constexpr uint64_t NOT_FILE_A = ~FILE_A;
-
-/**
- * uint64_t mask with zeros on file B.
- */
-constexpr uint64_t NOT_FILE_B = ~FILE_B;
-
-/**
- * uint64_t mask with zeros on file G.
- */
-constexpr uint64_t NOT_FILE_G = ~FILE_G;
-
-/**
- * uint64_t mask with zeros on file H.
- */
-constexpr uint64_t NOT_FILE_H = ~FILE_H;
-
-/**
- * uint64_t mask with zeros on files A and B.
- */
-constexpr uint64_t NOT_FILE_AB = NOT_FILE_A & NOT_FILE_B;
-
-/**
- * uint64_t mask with zeros on files G and H.
- */
-constexpr uint64_t NOT_FILE_GH = NOT_FILE_G & NOT_FILE_H;
-
-/**
  * uint64_t mask with ones on rank 1.
  */
 constexpr uint64_t RANK_1 = 0x00000000000000FFULL;

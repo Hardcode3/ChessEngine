@@ -12,14 +12,14 @@ constexpr uint64_t knight_attacks_for_square(int sq) {
 
   using namespace Bitmasks;
 
-  attacks |= (bb << 17) & NOT_FILE_A;   // NNE
-  attacks |= (bb << 15) & NOT_FILE_H;   // NNW
-  attacks |= (bb << 10) & NOT_FILE_AB;  // ENN
-  attacks |= (bb << 6) & NOT_FILE_GH;   // WNN
-  attacks |= (bb >> 17) & NOT_FILE_H;   // SSE
-  attacks |= (bb >> 15) & NOT_FILE_A;   // SSW
-  attacks |= (bb >> 10) & NOT_FILE_GH;  // ESS
-  attacks |= (bb >> 6) & NOT_FILE_AB;   // WSS
+  attacks |= (bb << 17) & ~FILE_A;             // NNE
+  attacks |= (bb << 15) & ~FILE_H;             // NNW
+  attacks |= (bb << 10) & ~(FILE_A | FILE_B);  // ENN
+  attacks |= (bb << 6) & ~(FILE_G | FILE_H);   // WNN
+  attacks |= (bb >> 17) & ~FILE_H;             // SSE
+  attacks |= (bb >> 15) & ~FILE_A;             // SSW
+  attacks |= (bb >> 10) & ~(FILE_G | FILE_H);  // ESS
+  attacks |= (bb >> 6) & ~(FILE_A | FILE_B);   // WSS
 
   return attacks;
 }
