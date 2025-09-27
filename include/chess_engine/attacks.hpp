@@ -4,7 +4,7 @@
 #include <chess_engine/bitmasks.hpp>
 #include <cstdint>
 
-namespace Bitmasks {
+namespace Attacks {
 
 constexpr uint64_t knight_attacks_for_square(int sq) {
   const uint64_t bb = 1ULL << sq;
@@ -32,4 +32,4 @@ constexpr std::array<Bitboard, 64> KNIGHT_ATTACKS = [] {
   return table;
 }();
 
-}  // namespace Bitmasks
+}  // namespace Attacks
