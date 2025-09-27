@@ -35,14 +35,16 @@ class Bitboard {
   uint64_t m_bb;  ///< Raw 64-bit bitboard value
 
  public:
-  /** @brief Constructs an empty bitboard (all bits = 0). */
-  Bitboard();
+  /** @brief Constructs an empty bitboard (all bits = 0).
+   * Zero initialization of uint64_t m_bb granted by C++ standard
+   */
+  constexpr Bitboard() : m_bb() {}
 
   /** @brief Constructs a bitboard from a raw 64-bit value. */
-  Bitboard(uint64_t value);
+  constexpr Bitboard(uint64_t value) : m_bb(value) {}
 
   /** @brief Returns the raw 64-bit value of the bitboard. */
-  uint64_t value();
+  constexpr uint64_t value() { return m_bb; }
 
   /**
    * @brief Sets a bit (places a piece) on a given square.
@@ -60,8 +62,8 @@ class Bitboard {
    * 1ULL << E2 = 00000000 00000000 ... 00010000 00000000
    * m_bb |= (1ULL << sq) = 00000000 00000000 ... 00010000 00000000
    */
-  void set(Square sq);
-  void set(Square::Value sq);
+  constexpr void set(Square sq) { m_bb |= (1ULL << sq.value()); }
+  constexpr void set(Square::Value sq) { m_bb |= (1ULL << sq); }
 
   /**
    * @brief Clears a bit (removes a piece) on a given square.
@@ -79,8 +81,8 @@ class Bitboard {
    * ~(1ULL << E2) = 11111111 11111111 ... 11101111 11111111
    * m_bb &= ~(1ULL << sq) = 00000000 00000000 ... 00000000 00000000
    */
-  void clear(Square sq);
-  void clear(Square::Value sq);
+  constexpr void clear(Square sq) { m_bb &= ~(1ULL << sq.value()); }
+  constexpr void clear(Square::Value sq) { m_bb &= ~(1ULL << sq); }
 
   /**
    * @brief Checks if a square is occupied.
@@ -98,11 +100,11 @@ class Bitboard {
    * (m_bb >> E2) & 1ULL = true
    *
    */
-  bool test(Square sq) const;
-  bool test(Square::Value sq) const;
+  constexpr bool test(Square sq) const { return (m_bb >> sq.value()) & 1ULL; }
+  constexpr bool test(Square::Value sq) const { return (m_bb >> sq) & 1ULL; }
 
   /** @brief Clears the whole bitboard (all bits = 0). */
-  void reset();
+  constexpr void reset() { m_bb = 0ULL; }
 
   /**
    * @brief Prints the bitboard as an 8×8 grid.
@@ -112,13 +114,27 @@ class Bitboard {
    *
    * The output starts from rank 8 down to rank 1.
    */
-  void print() const;
+  void print() const {
+    for (int rank = 7; rank >= 0; --rank) {
+      for (int file = 0; file < 8; ++file) {
+        const Square sq(file, rank);
+        std::cout << (test(sq) ? "1 " : ". ");
+      }
+      std::cout << "\n";
+    }
+  }
 
-  bool operator==(const Bitboard& other) const;
-  bool operator!=(const Bitboard& other) const;
-  Bitboard operator|(const Bitboard& other) const;
-  Bitboard operator&(const Bitboard& other) const;
-  Bitboard operator~() const;
-  Bitboard& operator|=(const Bitboard& other);
-  Bitboard& operator&=(const Bitboard& other);
+  constexpr bool operator==(const Bitboard& other) const { return m_bb == other.m_bb; }
+  constexpr bool operator!=(const Bitboard& other) const { return m_bb != other.m_bb; }
+  constexpr Bitboard operator|(const Bitboard& other) const { return m_bb | other.m_bb; }
+  constexpr Bitboard operator&(const Bitboard& other) const { return m_bb & other.m_bb; }
+  constexpr Bitboard operator~() const { return ~m_bb; }
+  constexpr Bitboard& operator|=(const Bitboard& other) {
+    m_bb |= other.m_bb;
+    return *this;
+  }
+  constexpr Bitboard& operator&=(const Bitboard& other) {
+    m_bb &= other.m_bb;
+    return *this;
+  }
 };
