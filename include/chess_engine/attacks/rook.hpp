@@ -13,8 +13,8 @@ namespace Attacks {
  */
 constexpr uint64_t rook_north_attacks(int sq) {
   uint64_t attacks = 0ULL;
-  int r = sq / 8;  // rank (0-7)
-  int f = sq % 8;  // file (0-7)
+  int r = sq / 8;
+  int f = sq % 8;
   for (int i = r + 1; i < 8; ++i) {
     attacks |= (1ULL << (f + i * 8));
   }
